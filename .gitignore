@@ -15,5 +15,6 @@ data-raw/**/*
 
 # Embedded upstream snapshot — not part of this fork's history
 PLeW-main/
-# Manuscript drafts
+# Manuscript drafts (local only)
+paper/
 *.pdf
