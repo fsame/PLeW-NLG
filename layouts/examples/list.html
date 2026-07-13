@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ .Title }} - BetterViz</title>
+    <title>{{ .Title }} - PLeW-NLG</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -34,13 +34,34 @@
             color: #8899a6;
             font-size: 14px;
         }
-        .gallery {
+        .gallery-page {
             padding: 40px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .task-section + .task-section {
+            margin-top: 40px;
+        }
+        .task-header {
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #2d3640;
+        }
+        .task-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #e8e8e8;
+            margin-bottom: 6px;
+        }
+        .task-desc {
+            font-size: 13px;
+            color: #8899a6;
+            line-height: 1.5;
+        }
+        .gallery {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 24px;
-            max-width: 1100px;
-            margin: 0 auto;
         }
         .card {
             background: #1a1f26;
@@ -58,7 +79,6 @@
             border-color: #4ecdc4;
             transform: translateY(-2px);
         }
-        .card-icon { font-size: 26px; }
         .card-title {
             font-size: 16px;
             font-weight: 600;
@@ -93,17 +113,56 @@
 <body>
     <div class="page-header">
         <a class="back-link" href="{{ .Site.BaseURL }}">← Full Editor</a>
-        <h1>📊 Example Datasets</h1>
-        <p>Explore pre-loaded datasets in the interactive multi-dimensional visualizer</p>
+        <h1>Example Datasets</h1>
+        <p>Human evaluation and annotation datasets for NLG — grouped by task, explore in the interactive visualizer</p>
     </div>
-    <div class="gallery">
-        {{ range .Pages }}
-        <a class="card" href="{{ .Permalink }}">
-            <div class="card-icon">📈</div>
-            <div class="card-title">{{ .Title }}</div>
-            <div class="card-desc">{{ .Description }}</div>
-            <div class="card-cta">Explore →</div>
-        </a>
+    <div class="gallery-page">
+        {{ $pages := .Pages }}
+        {{ $sections := slice
+            (dict "task" "data-to-text" "title" "Data-to-text" "desc" "Structured inputs to fluent text — KG/triple, table, or slot-filling generation with human quality judgments.")
+            (dict "task" "summarization" "title" "Summarization" "desc" "Abstractive and multilingual summary evaluation with criterion-level human ratings.")
+            (dict "task" "simplification" "title" "Text simplification" "desc" "Readable rewrite quality — per-output scores and rater agreement on simplified text.")
+            (dict "task" "llm-as-judge" "title" "LLM-as-judge" "desc" "Pairwise or criterion judgments from LLM evaluators on generated outputs.")
+            (dict "task" "image-captioning" "title" "Image captioning" "desc" "Image–caption human judgments with local media in the record window.")
+        }}
+        {{ range $sections }}
+            {{ $section := . }}
+            {{ $items := where $pages "Params.task" $section.task }}
+            {{ if $items }}
+            <section class="task-section">
+                <div class="task-header">
+                    <div class="task-title">{{ $section.title }}</div>
+                    <p class="task-desc">{{ $section.desc }}</p>
+                </div>
+                <div class="gallery">
+                    {{ range $items.ByWeight }}
+                    <a class="card" href="{{ .Permalink }}">
+                        <div class="card-title">{{ .Title }}</div>
+                        <div class="card-desc">{{ .Description }}</div>
+                        <div class="card-cta">Explore →</div>
+                    </a>
+                    {{ end }}
+                </div>
+            </section>
+            {{ end }}
+        {{ end }}
+        {{ $orphans := where $pages "Params.task" nil }}
+        {{ if $orphans }}
+        <section class="task-section">
+            <div class="task-header">
+                <div class="task-title">Other</div>
+                <p class="task-desc">Datasets without a <code>task</code> field in their page front matter.</p>
+            </div>
+            <div class="gallery">
+                {{ range $orphans.ByWeight }}
+                <a class="card" href="{{ .Permalink }}">
+                    <div class="card-title">{{ .Title }}</div>
+                    <div class="card-desc">{{ .Description }}</div>
+                    <div class="card-cta">Explore →</div>
+                </a>
+                {{ end }}
+            </div>
+        </section>
         {{ end }}
     </div>
     <div class="page-footer">

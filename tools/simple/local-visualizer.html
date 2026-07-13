@@ -1966,6 +1966,15 @@
         // ============================================================
         // CONFIGURATION
         // ============================================================
+        const SITE_BASE = (() => {
+            if (window.location.protocol === 'file:') return '';
+            const path = window.location.pathname;
+            const toolsIdx = path.indexOf('/tools/');
+            if (toolsIdx >= 0) return window.location.origin + path.slice(0, toolsIdx + 1);
+            const lastSlash = path.lastIndexOf('/');
+            return lastSlash >= 0 ? window.location.origin + path.slice(0, lastSlash + 1) : window.location.origin + '/';
+        })();
+
         const COLORS = [
             '#4ecdc4', '#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff',
             '#9b59b6', '#e67e22', '#1abc9c', '#e74c3c', '#3498db'
@@ -2377,7 +2386,7 @@
         // Priority order:
         //   1. Already absolute/blob/data → unchanged
         //   2. localMediaMap lookup by basename (for locally picked media folder)
-        //   3. Root-relative (/path/file) → pass through (browser resolves against current origin)
+        //   3. Site-relative path → resolve against SITE_BASE (Hugo subpath-aware)
         //   4. Relative path → resolve against csvBaseUrl (when CSV was fetched from a URL)
         function resolveMediaUrl(url) {
             if (!url) return url;
@@ -2390,8 +2399,14 @@
             if (localMediaMap[url]) return localMediaMap[url];
             const basename = url.split(/[/\\]/).pop();
             if (basename && localMediaMap[basename]) return localMediaMap[basename];
-            // Root-relative — let the browser resolve against the current origin.
-            if (url.startsWith('/')) return url;
+            // Site-relative — prepend SITE_BASE so flickr8k/... works under /PLeW-NLG/.
+            if (SITE_BASE) {
+                try {
+                    const base = SITE_BASE.endsWith('/') ? SITE_BASE : SITE_BASE + '/';
+                    const path = url.startsWith('/') ? url.slice(1) : url;
+                    return new URL(path, base).href;
+                } catch (e) {}
+            }
             // Relative path — resolve against the directory the CSV was loaded from.
             if (csvBaseUrl) {
                 try {

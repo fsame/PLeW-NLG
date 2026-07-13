@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ .Title }} - BetterViz</title>
+    <title>{{ .Title }} - PLeW-NLG</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -482,6 +482,16 @@
             font-size: 0.75rem;
         }
         
+        .legend-filter-cb {
+            accent-color: #4ecdc4;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        
+        .legend-row.legend-row-filtered-out {
+            opacity: 0.45;
+        }
+        
         .legend-swatch {
             width: 14px;
             height: 14px;
@@ -661,9 +671,6 @@
         }
         
         .grid-row-label {
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-            transform: rotate(180deg);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -672,9 +679,8 @@
             padding: 6px 4px;
             background: #1a1f26;
             border-radius: 6px;
-            max-height: 120px;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            overflow: visible;
+            min-width: 0;
         }
         
         .grid-col-label {
@@ -750,9 +756,18 @@
         }
         
         .panel-axis-label.y-header {
-            writing-mode: vertical-rl;
-            transform: rotate(180deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: visible;
             border-radius: 0 4px 4px 0;
+        }
+
+        .vertical-axis-label-text {
+            display: inline-block;
+            white-space: nowrap;
+            transform: rotate(-90deg);
+            transform-origin: center center;
         }
         
         .corner-cell {
@@ -952,6 +967,25 @@
         .modal-header h3 {
             font-size: 1.3rem;
             font-weight: 500;
+        }
+
+        .modal-snap-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #aaa;
+            font-size: 0.75rem;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .modal-snap-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
         }
         
         .modal-close {
@@ -1203,10 +1237,16 @@
             margin-bottom: 12px;
         }
         
+        .value-filter-dim-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        
         .value-filter-dim-title {
             font-size: 0.7rem;
             color: #888;
-            margin-bottom: 6px;
         }
         
         .value-filter-checkboxes {
@@ -1225,6 +1265,41 @@
         }
         
         .value-filter-checkboxes input { accent-color: #4ecdc4; }
+        
+        .viz-config-notice {
+            margin-top: 8px;
+            padding: 6px 8px;
+            font-size: 0.72rem;
+            color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.1);
+            border-radius: 4px;
+        }
+
+        .viz-config-import-menu {
+            margin-top: 8px;
+            padding: 8px;
+            background: #1a1f26;
+            border: 1px solid #2d3640;
+            border-radius: 6px;
+        }
+
+        .viz-config-import-title {
+            font-size: 0.72rem;
+            color: #888;
+            margin-bottom: 6px;
+        }
+
+        .viz-config-import-choices {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .viz-config-choice-btn {
+            justify-content: flex-start;
+            text-align: left;
+        }
         
         /* Edit mode hint */
         .edit-hint {
@@ -1753,6 +1828,22 @@
                     <div class="grid-info" id="gridInfo"></div>
                 </div>
                 
+                <div class="section" id="vizConfigSection" style="display: none;">
+                    <div class="section-title">Visualization setup</div>
+                    <div class="value-filters-hint">Export your dimension order, filters, colors/shapes, and display options as JSON. Import a saved file to restore that setup.</div>
+                    <div id="vizConfigNotice" class="viz-config-notice" style="display: none;"></div>
+                    <div class="changes-actions" style="margin-top: 8px;">
+                        <button class="btn btn-secondary btn-small" onclick="downloadVisualizationConfig()">📤 Export setup</button>
+                        <button class="btn btn-secondary btn-small" onclick="openVizConfigImport()">📥 Import setup</button>
+                        <input type="file" id="vizConfigImportInput" accept=".json,application/json" hidden onchange="importVisualizationConfigFromFile(event)">
+                    </div>
+                    <div id="vizConfigImportMenu" class="viz-config-import-menu" style="display: none;">
+                        <div class="viz-config-import-title">Setups found alongside this dataset</div>
+                        <div id="vizConfigImportChoices" class="viz-config-import-choices"></div>
+                        <button class="btn btn-secondary btn-small" onclick="chooseVizConfigFile()">Choose another file…</button>
+                    </div>
+                </div>
+                
                 <div class="section" id="valueFiltersSection" style="display: none;">
                     <div class="section-title">Filter values</div>
                     <div class="value-filters-hint">Choose which values to show per dimension. Default: all visible.</div>
@@ -1934,7 +2025,11 @@
         <div class="modal" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <h3 id="modalTitle">Record Details</h3>
-                <button class="modal-close" onclick="closeModal()">×</button>
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <button class="modal-snap-btn" onclick="snapshotModal('full')" title="Capture full modal as one stacked image">📷 Stacked</button>
+                    <button class="modal-snap-btn" onclick="snapshotModal('horizontal')" title="Capture fields and media side by side">📷 Side-by-side</button>
+                    <button class="modal-close" onclick="closeModal()">×</button>
+                </div>
             </div>
             <div class="modal-body" id="modalBody"></div>
         </div>
@@ -2026,6 +2121,26 @@
             return dim.uniqueValues.filter(v => filter.has(v));
         }
         
+        function getDimensionValueCountLabel(dim) {
+            const total = dim.uniqueValues?.length ?? dim.cardinality ?? 0;
+            const visible = getVisibleValues(dim).length;
+            const plural = total === 1 ? 'value' : 'values';
+            if (!dimensionValueFilters[dimKey(dim)] || visible === total) {
+                return `${total} ${plural}`;
+            }
+            return `${visible} of ${total} ${plural}`;
+        }
+        
+        function rowPassesColorShapeFilters(row, encodings) {
+            for (const dim of [encodings.color, encodings.shape]) {
+                if (!dim) continue;
+                const key = dimKey(dim);
+                const filter = dimensionValueFilters[key];
+                if (filter && !filter.has(row[key])) return false;
+            }
+            return true;
+        }
+        
         function setValueFilter(key, value, visible) {
             if (!dimensionValueFilters[key]) {
                 const dim = allDimensions?.find(d => dimKey(d) === key);
@@ -2037,6 +2152,337 @@
                 dimensionValueFilters[key].delete(value);
             }
             if (currentData && encodings) updateVisualization();
+        }
+        
+        function setAllValueFilters(key, visible) {
+            if (visible) {
+                delete dimensionValueFilters[key];
+            } else {
+                dimensionValueFilters[key] = new Set();
+            }
+            if (currentData && encodings) updateVisualization();
+        }
+        
+        function addFilterToggleActions(parent, key) {
+            const actions = document.createElement('div');
+            actions.className = 'section-title-actions';
+            const allBtn = document.createElement('button');
+            allBtn.type = 'button';
+            allBtn.className = 'section-btn';
+            allBtn.textContent = 'All';
+            allBtn.addEventListener('click', () => setAllValueFilters(key, true));
+            const noneBtn = document.createElement('button');
+            noneBtn.type = 'button';
+            noneBtn.className = 'section-btn';
+            noneBtn.textContent = 'None';
+            noneBtn.addEventListener('click', () => setAllValueFilters(key, false));
+            actions.append(allBtn, noneBtn);
+            parent.appendChild(actions);
+        }
+        
+        function renderFilterSectionTitle(titleEl, label, key) {
+            titleEl.innerHTML = '';
+            const labelSpan = document.createElement('span');
+            labelSpan.textContent = label;
+            titleEl.appendChild(labelSpan);
+            addFilterToggleActions(titleEl, key);
+        }
+        
+        function datasetIdFromFilename(filename) {
+            const path = String(filename || 'dataset');
+            return path.split('/').pop().split('?')[0] || path;
+        }
+        
+        function buildVisualizationConfig() {
+            const valueFilters = {};
+            Object.entries(dimensionValueFilters).forEach(([key, visibleSet]) => {
+                valueFilters[key] = [...visibleSet];
+            });
+            return {
+                version: VIZ_CONFIG_VERSION,
+                kind: VIZ_CONFIG_KIND,
+                exportedAt: new Date().toISOString(),
+                dataset: {
+                    id: currentDatasetId,
+                    label: currentDatasetId
+                },
+                dimensions: {
+                    order: [...userDimensionOrder],
+                    enabled: [...enabledDimensions]
+                },
+                valueFilters,
+                styling: {
+                    customColors: { ...customColorMap },
+                    customShapes: { ...customShapeMap }
+                },
+                display: {
+                    showItemCounts: !!document.getElementById('showItemCounts')?.checked,
+                    uniformGridSizes: !!document.getElementById('uniformgrids')?.checked,
+                    outerPanelRowHeight: document.getElementById('outerPanelRowHeight')?.value ?? '200',
+                    unifyInnerPanel: !!document.getElementById('unifyInnerPanel')?.checked,
+                    innerPanelRowHeight: document.getElementById('innerPanelRowHeight')?.value ?? '56',
+                    labelSize: document.getElementById('labelSize')?.value ?? '0.7',
+                    labelColor: document.getElementById('labelColor')?.value ?? '#888888',
+                    countSize: document.getElementById('countSize')?.value ?? '0.6',
+                    countColor: document.getElementById('countColor')?.value ?? '#555555'
+                },
+                dummySettings: { ...dummySettings }
+            };
+        }
+        
+        function applyConfigState(config, options = {}) {
+            const { silent = false } = options;
+            if (!config || config.kind !== VIZ_CONFIG_KIND) {
+                if (!silent) alert('Not a PLeW visualization setup file.');
+                return false;
+            }
+            if (!allDimensions) return false;
+            
+            if (!silent && config.dataset?.id && currentDatasetId && config.dataset.id !== currentDatasetId) {
+                const saved = config.dataset.label || config.dataset.id;
+                const ok = confirm(
+                    `This setup was saved for "${saved}".\nCurrent dataset is "${currentDatasetId}".\n\nApply anyway?`
+                );
+                if (!ok) return false;
+            }
+            
+            const knownNames = new Set(allDimensions.map(d => d.name));
+            const order = [];
+            (config.dimensions?.order || []).forEach(name => {
+                if (knownNames.has(name)) order.push(name);
+            });
+            allDimensions.forEach(dim => {
+                if (!order.includes(dim.name)) order.push(dim.name);
+            });
+            userDimensionOrder = order;
+            
+            const enabled = (config.dimensions?.enabled || order).filter(name => knownNames.has(name));
+            enabledDimensions = new Set(enabled.length ? enabled : order);
+            
+            dimensionValueFilters = {};
+            Object.entries(config.valueFilters || {}).forEach(([key, visible]) => {
+                if (!Array.isArray(visible)) return;
+                const dim = allDimensions.find(d => dimKey(d) === key);
+                if (!dim) return;
+                const validVisible = visible.filter(v => dim.uniqueValues.includes(v));
+                if (validVisible.length > 0 && validVisible.length < dim.uniqueValues.length) {
+                    dimensionValueFilters[key] = new Set(validVisible);
+                }
+            });
+            
+            customColorMap = { ...(config.styling?.customColors || {}) };
+            customShapeMap = { ...(config.styling?.customShapes || {}) };
+            
+            const display = config.display || {};
+            const setChecked = (id, value) => {
+                const el = document.getElementById(id);
+                if (el) el.checked = !!value;
+            };
+            const setValue = (id, value) => {
+                const el = document.getElementById(id);
+                if (el && value != null) el.value = value;
+            };
+            setChecked('showItemCounts', display.showItemCounts);
+            showItemCounts = !!display.showItemCounts;
+            setChecked('uniformgrids', display.uniformGridSizes);
+            uniformgridSizes = !!display.uniformGridSizes;
+            setValue('outerPanelRowHeight', display.outerPanelRowHeight);
+            setValue('innerPanelRowHeight', display.innerPanelRowHeight);
+            setChecked('unifyInnerPanel', display.unifyInnerPanel);
+            unifyInnerPanel = !!display.unifyInnerPanel;
+            setValue('labelSize', display.labelSize);
+            setValue('labelColor', display.labelColor);
+            setValue('countSize', display.countSize);
+            setValue('countColor', display.countColor);
+            document.getElementById('outerPanelRowHeight')?.toggleAttribute('disabled', !uniformgridSizes);
+            document.getElementById('innerPanelRowHeight')?.toggleAttribute('disabled', !unifyInnerPanel);
+            applyLabelStyle();
+            
+            if (config.dummySettings) {
+                dummySettings = { ...dummySettings, ...config.dummySettings };
+            }
+            
+            return true;
+        }
+        
+        function applyVisualizationConfig(config, options = {}) {
+            const { silent = false } = options;
+            if (!applyConfigState(config, { silent })) return false;
+            renderDimensionList();
+            renderDummySettingsUI();
+            updateVisualization();
+            if (!silent) showVizConfigNotice('Visualization setup applied.');
+            return true;
+        }
+        
+        function downloadVisualizationConfig() {
+            if (!allDimensions) {
+                alert('Load a dataset first.');
+                return;
+            }
+            const config = buildVisualizationConfig();
+            const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            const base = (currentDatasetId || 'dataset').replace(/\.[^.]+$/, '');
+            link.href = URL.createObjectURL(blob);
+            link.download = `plew-setup-${base}.json`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            showVizConfigNotice('Setup exported.');
+        }
+        
+        function importVisualizationConfigFromFile(event) {
+            const file = event.target.files?.[0];
+            event.target.value = '';
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    applyVisualizationConfig(JSON.parse(e.target.result), { silent: false });
+                    hideVizConfigImportMenu();
+                } catch (err) {
+                    alert('Could not read setup file: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        let discoveredVizConfigs = [];
+
+        function datasetBaseName(datasetId) {
+            return (datasetId || 'dataset').replace(/\.[^.]+$/, '');
+        }
+
+        function plewSetupCandidateNames(datasetId) {
+            const base = datasetBaseName(datasetId);
+            return [
+                `plew-setup-${base}.json`,
+                `${base}.plew-setup.json`
+            ];
+        }
+
+        function isVisualizationConfigPayload(obj) {
+            return obj && obj.kind === VIZ_CONFIG_KIND;
+        }
+
+        function addDiscoveredVizConfig(label, config) {
+            if (!isVisualizationConfigPayload(config)) return;
+            if (discoveredVizConfigs.some(item => item.label === label)) return;
+            discoveredVizConfigs.push({ label, config });
+        }
+
+        async function tryFetchVizConfig(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) return null;
+                const config = await response.json();
+                return isVisualizationConfigPayload(config) ? config : null;
+            } catch (_) {
+                return null;
+            }
+        }
+
+        function getDatasetDirectoryUrl() {
+            if (typeof DATASET_URL !== 'undefined' && DATASET_URL) {
+                try {
+                    const u = new URL(DATASET_URL, window.location.href);
+                    const path = u.pathname;
+                    return u.origin + path.slice(0, path.lastIndexOf('/') + 1);
+                } catch (_) {}
+            }
+            return '';
+        }
+
+        async function discoverVizConfigsFromBaseUrl(baseUrl, datasetId) {
+            if (!baseUrl || !datasetId) return [];
+            const found = [];
+            const seen = new Set();
+            for (const name of plewSetupCandidateNames(datasetId)) {
+                let url;
+                try {
+                    url = new URL(name, baseUrl).href;
+                } catch (_) {
+                    continue;
+                }
+                if (seen.has(url)) continue;
+                seen.add(url);
+                const config = await tryFetchVizConfig(url);
+                if (config) found.push({ label: name, config });
+            }
+            return found;
+        }
+
+        async function discoverVizConfigsForDataset() {
+            const configs = await discoverVizConfigsFromBaseUrl(getDatasetDirectoryUrl(), currentDatasetId);
+            configs.forEach(item => addDiscoveredVizConfig(item.label, item.config));
+        }
+
+        function getImportableVizConfigs() {
+            if (!discoveredVizConfigs.length) return [];
+            const base = datasetBaseName(currentDatasetId);
+            const matched = discoveredVizConfigs.filter(item => {
+                const savedId = item.config.dataset?.id;
+                if (savedId && savedId === currentDatasetId) return true;
+                return item.label.includes(base);
+            });
+            return matched.length ? matched : discoveredVizConfigs;
+        }
+
+        function renderVizConfigImportMenu() {
+            const menu = document.getElementById('vizConfigImportMenu');
+            const choices = document.getElementById('vizConfigImportChoices');
+            if (!menu || !choices) return;
+
+            const configs = getImportableVizConfigs();
+            choices.innerHTML = '';
+            configs.forEach(item => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'btn btn-secondary btn-small viz-config-choice-btn';
+                const exportedAt = item.config.exportedAt
+                    ? ` (${new Date(item.config.exportedAt).toLocaleString()})`
+                    : '';
+                btn.textContent = `${item.label}${exportedAt}`;
+                btn.onclick = () => {
+                    applyVisualizationConfig(item.config, { silent: false });
+                    hideVizConfigImportMenu();
+                };
+                choices.appendChild(btn);
+            });
+            menu.style.display = configs.length ? 'block' : 'none';
+        }
+
+        function hideVizConfigImportMenu() {
+            const menu = document.getElementById('vizConfigImportMenu');
+            if (menu) menu.style.display = 'none';
+        }
+
+        function openVizConfigImport() {
+            const configs = getImportableVizConfigs();
+            if (!configs.length) {
+                document.getElementById('vizConfigImportInput').click();
+                return;
+            }
+            renderVizConfigImportMenu();
+            const menu = document.getElementById('vizConfigImportMenu');
+            if (!menu) return;
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function chooseVizConfigFile() {
+            hideVizConfigImportMenu();
+            document.getElementById('vizConfigImportInput').click();
+        }
+        
+        function showVizConfigNotice(message) {
+            const el = document.getElementById('vizConfigNotice');
+            if (!el) return;
+            el.textContent = message;
+            el.style.display = 'block';
+            clearTimeout(showVizConfigNotice._timer);
+            showVizConfigNotice._timer = setTimeout(() => {
+                el.style.display = 'none';
+            }, 5000);
         }
         
         function shouldExcludeFromTooltip(key) {
@@ -2106,6 +2552,9 @@
         };
         let preservedDimValues = {};
         let dimensionValueFilters = {};
+        let currentDatasetId = null;
+        const VIZ_CONFIG_KIND = 'plew-visualization-config';
+        const VIZ_CONFIG_VERSION = 1;
 
         // For the item counts above panels/sectors
         let showItemCounts = false;
@@ -2231,7 +2680,66 @@
             result.push(current);
             return result;
         }
-        
+
+        // ============================================================
+        // JSON / JSONL PARSING
+        // ============================================================
+        // Accepts: a top-level JSON array of objects; a single JSON object
+        // (treated as one row); a Hugging Face datasets-server style
+        // { rows: [{ row: {...} }, ...] } payload; or JSONL (one JSON
+        // object per line). Nested arrays/objects in a field are kept as
+        // their JSON string representation, same as any other text cell.
+        function parseJSON(text) {
+            let rows = [];
+            try {
+                const parsed = JSON.parse(text);
+                if (Array.isArray(parsed)) {
+                    rows = parsed;
+                } else if (parsed && Array.isArray(parsed.rows)) {
+                    // Hugging Face datasets-server shape: { rows: [{ row_idx, row: {...} }] }
+                    rows = parsed.rows.map(r => (r && typeof r.row === 'object') ? r.row : r);
+                } else if (parsed && Array.isArray(parsed.data)) {
+                    rows = parsed.data;
+                } else if (parsed && typeof parsed === 'object') {
+                    rows = [parsed];
+                }
+            } catch (e) {
+                // Not a single valid JSON document — try JSONL (one object per line).
+                rows = text.split('\n')
+                    .map(line => line.replace(/\r$/, '').trim())
+                    .filter(line => line.length > 0)
+                    .map(line => {
+                        try { return JSON.parse(line); } catch (e2) { return null; }
+                    })
+                    .filter(row => row !== null);
+            }
+
+            // Normalize to plain objects (wrap stray primitives/arrays-of-primitives).
+            rows = rows.map(r => (r && typeof r === 'object' && !Array.isArray(r)) ? r : { value: r });
+
+            // Union of keys across all rows, preserving first-seen order (sparse-field safe).
+            const headerSet = new Set();
+            rows.forEach(r => Object.keys(r).forEach(k => headerSet.add(k)));
+            const headers = Array.from(headerSet);
+
+            const data = rows.map((r, idx) => {
+                const row = { _index: idx };
+                headers.forEach(header => {
+                    const v = r[header];
+                    if (v === undefined || v === null) row[header] = '';
+                    else if (typeof v === 'object') row[header] = JSON.stringify(v);
+                    else row[header] = String(v);
+                });
+                return row;
+            });
+
+            return { headers, data };
+        }
+
+        function isJsonFilename(name) {
+            return /\.(json|jsonl|ndjson)$/i.test(name || '');
+        }
+
         // ============================================================
         // CSV EXPORT
         // ============================================================
@@ -2270,6 +2778,14 @@
             return csv;
         }
         
+        function setVerticalAxisLabel(el, text) {
+            el.textContent = '';
+            const span = document.createElement('span');
+            span.className = 'vertical-axis-label-text';
+            span.textContent = text;
+            el.appendChild(span);
+        }
+
         function fixSnapshotLabels(doc, clonedRoot) {
             clonedRoot.querySelectorAll('.grid-row-label, .panel-axis-label.y-header').forEach(el => {
                 const text = el.textContent.trim();
@@ -2284,11 +2800,8 @@
                 el.style.justifyContent = 'center';
 
                 const span = doc.createElement('span');
+                span.className = 'vertical-axis-label-text';
                 span.textContent = text;
-                span.style.display = 'inline-block';
-                span.style.whiteSpace = 'nowrap';
-                span.style.transform = 'rotate(-90deg)';
-                span.style.transformOrigin = 'center center';
                 el.appendChild(span);
             });
 
@@ -3374,7 +3887,7 @@
                     <div class="dimension-rank">${activeIndex >= 0 ? activeIndex + 1 : '-'}</div>
                     <div class="dimension-info">
                         <div class="dimension-name">${dim.name}</div>
-                        <div class="dimension-meta">${dim.cardinality} values</div>
+                        <div class="dimension-meta">${getDimensionValueCountLabel(dim)}</div>
                     </div>
                     ${encoding ? `<div class="dimension-encoding ${encoding.class}">${encoding.label}</div>` : ''}
                 `;
@@ -3415,8 +3928,16 @@
                 const isFiltered = dimensionValueFilters[k];
                 const div = document.createElement('div');
                 div.className = 'value-filter-dim';
-                div.innerHTML = `<div class="value-filter-dim-title">${dim.name}</div><div class="value-filter-checkboxes"></div>`;
-                const cbContainer = div.querySelector('.value-filter-checkboxes');
+                const header = document.createElement('div');
+                header.className = 'value-filter-dim-header';
+                const title = document.createElement('div');
+                title.className = 'value-filter-dim-title';
+                title.textContent = dim.name;
+                header.appendChild(title);
+                addFilterToggleActions(header, k);
+                const cbContainer = document.createElement('div');
+                cbContainer.className = 'value-filter-checkboxes';
+                div.append(header, cbContainer);
                 dim.uniqueValues.forEach(val => {
                     const checked = !isFiltered || dimensionValueFilters[k].has(val);
                     const label = document.createElement('label');
@@ -3437,11 +3958,15 @@
             
             document.querySelectorAll('.dimension-item').forEach(item => {
                 const name = item.dataset.name;
+                const dim = allDimensions.find(d => d.name === name);
                 const activeIndex = activeDims.findIndex(d => d.name === name);
                 const isEnabled = enabledDimensions.has(name);
                 
                 const rankEl = item.querySelector('.dimension-rank');
                 rankEl.textContent = activeIndex >= 0 ? activeIndex + 1 : '-';
+                
+                const metaEl = item.querySelector('.dimension-meta');
+                if (metaEl && dim) metaEl.textContent = getDimensionValueCountLabel(dim);
                 
                 const existingEncoding = item.querySelector('.dimension-encoding');
                 if (existingEncoding) existingEncoding.remove();
@@ -3487,13 +4012,31 @@
             }
             
             section.style.display = 'block';
-            section.querySelector('.section-title').textContent = `Color: ${encodings.color.name}`;
+            const colorKey = dimKey(encodings.color);
+            renderFilterSectionTitle(
+                section.querySelector('.section-title'),
+                `Color: ${encodings.color.name}`,
+                colorKey
+            );
             container.innerHTML = '';
             
             encodings.color.uniqueValues.forEach((value, idx) => {
                 const color = getColorForValue(encodings, value);
                 const row = document.createElement('div');
                 row.className = 'legend-row interactive';
+                
+                const filterCb = document.createElement('input');
+                filterCb.type = 'checkbox';
+                filterCb.className = 'legend-filter-cb';
+                filterCb.title = `Show/hide points with ${encodings.color.name} = ${value}`;
+                const colorVisible = !dimensionValueFilters[colorKey] || dimensionValueFilters[colorKey].has(value);
+                filterCb.checked = colorVisible;
+                row.classList.toggle('legend-row-filtered-out', !colorVisible);
+                filterCb.addEventListener('click', (e) => e.stopPropagation());
+                filterCb.addEventListener('change', () => {
+                    setValueFilter(colorKey, value, filterCb.checked);
+                    row.classList.toggle('legend-row-filtered-out', !filterCb.checked);
+                });
                 
                 const wrapper = document.createElement('div');
                 wrapper.className = 'color-picker-wrapper';
@@ -3518,6 +4061,7 @@
                 const label = document.createElement('span');
                 label.textContent = value;
                 
+                row.appendChild(filterCb);
                 row.appendChild(wrapper);
                 row.appendChild(label);
                 container.appendChild(row);
@@ -3526,7 +4070,7 @@
             // Edit hint
             const hint = document.createElement('div');
             hint.className = 'legend-edit-hint';
-            hint.textContent = 'Click swatches to customize colors';
+            hint.textContent = 'Use checkboxes to filter (All/None above); click swatches to customize colors';
             container.appendChild(hint);
         }
         
@@ -3540,13 +4084,31 @@
             }
             
             section.style.display = 'block';
-            section.querySelector('.section-title').textContent = `Shape: ${encodings.shape.name}`;
+            const shapeKey = dimKey(encodings.shape);
+            renderFilterSectionTitle(
+                section.querySelector('.section-title'),
+                `Shape: ${encodings.shape.name}`,
+                shapeKey
+            );
             container.innerHTML = '';
             
             encodings.shape.uniqueValues.forEach((value, idx) => {
                 const shape = getShapeForValue(encodings, value);
                 const row = document.createElement('div');
                 row.className = 'legend-row interactive';
+                
+                const filterCb = document.createElement('input');
+                filterCb.type = 'checkbox';
+                filterCb.className = 'legend-filter-cb';
+                filterCb.title = `Show/hide points with ${encodings.shape.name} = ${value}`;
+                const shapeVisible = !dimensionValueFilters[shapeKey] || dimensionValueFilters[shapeKey].has(value);
+                filterCb.checked = shapeVisible;
+                row.classList.toggle('legend-row-filtered-out', !shapeVisible);
+                filterCb.addEventListener('click', (e) => e.stopPropagation());
+                filterCb.addEventListener('change', () => {
+                    setValueFilter(shapeKey, value, filterCb.checked);
+                    row.classList.toggle('legend-row-filtered-out', !filterCb.checked);
+                });
                 
                 const shapeBtn = document.createElement('div');
                 shapeBtn.className = 'legend-shape-btn';
@@ -3566,6 +4128,7 @@
                 label.textContent = `${value} (${shape})`;
                 label.style.fontSize = '0.75rem';
                 
+                row.appendChild(filterCb);
                 row.appendChild(shapeBtn);
                 row.appendChild(label);
                 container.appendChild(row);
@@ -3574,7 +4137,7 @@
             // Edit hint
             const hint = document.createElement('div');
             hint.className = 'legend-edit-hint';
-            hint.textContent = 'Click shapes to customize assignments';
+            hint.textContent = 'Use checkboxes to filter (All/None above); click shapes to customize assignments';
             container.appendChild(hint);
         }
         
@@ -3702,7 +4265,7 @@
             gridYValues.forEach(yVal => {
                 const rowLabel = document.createElement('div');
                 rowLabel.className = 'grid-row-label';
-                rowLabel.textContent = yVal;
+                setVerticalAxisLabel(rowLabel, yVal);
                 rowLabel.title = `${encodings.gridY?.name}: ${yVal}`;
                 outerGrid.appendChild(rowLabel);
                 
@@ -3802,8 +4365,9 @@
             
             const title = document.createElement('div');
             title.className = 'grid-title';
-            const realCount = gridData.filter(r => !r._isDummy).length;
-            const dummyCount = gridData.filter(r => r._isDummy).length;
+            const visibleGridData = gridData.filter(row => rowPassesColorShapeFilters(row, encodings));
+            const realCount = visibleGridData.filter(r => !r._isDummy).length;
+            const dummyCount = visibleGridData.filter(r => r._isDummy).length;
             title.textContent = dummyCount > 0 ? `${realCount} items (+${dummyCount}⚓)` : `${realCount} items`;
             grid.appendChild(title);
             if (!showItemCounts) title.style.display = 'none';
@@ -3845,7 +4409,7 @@
             panelYValues.slice().reverse().forEach(yVal => {
                 const yHeader = document.createElement('div');
                 yHeader.className = 'panel-axis-label y-header';
-                yHeader.textContent = yVal;
+                setVerticalAxisLabel(yHeader, yVal);
                 yHeader.title = `${encodings.panelY?.name}: ${yVal}`;
                 panelGrid.appendChild(yHeader);
                 
@@ -3887,6 +4451,7 @@
             if (encodings.panelY && allpanelYVals.length > 1) {
                 cellData = cellData.filter(row => row[dimKey(encodings.panelY)] === panelYVal);
             }
+            cellData = cellData.filter(row => rowPassesColorShapeFilters(row, encodings));
             
             // Drop zone setup
             cell.addEventListener('dragover', handleCellDragOver);
@@ -4335,6 +4900,83 @@
             URL.revokeObjectURL(a.href);
         }
         
+        function snapshotModal(mode) {
+            const modal = document.querySelector('#modalOverlay .modal');
+            if (!modal) return;
+            if (typeof html2canvas === 'undefined') {
+                alert('Snapshot requires html2canvas. Please check your connection.');
+                return;
+            }
+
+            const title = (document.getElementById('modalTitle')?.textContent || 'record').replace(/\s+/g, '_');
+            const BG = '#1e1e2f';
+
+            function downloadCanvas(canvas, filename) {
+                canvas.toBlob(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                }, 'image/png');
+            }
+
+            function expandClone(el) {
+                el.style.maxHeight = 'none';
+                el.style.overflowY = 'visible';
+            }
+
+            if (mode === 'full') {
+                html2canvas(modal, {
+                    backgroundColor: BG,
+                    scale: 2,
+                    onclone: (_doc, el) => expandClone(el)
+                }).then(canvas => downloadCanvas(canvas, `${title}_stacked.png`));
+
+            } else {
+                const fieldsPromise = html2canvas(modal, {
+                    backgroundColor: BG, scale: 2,
+                    onclone: (_doc, el) => {
+                        expandClone(el);
+                        const ms = el.querySelector('.media-section');
+                        if (ms) ms.style.display = 'none';
+                    }
+                });
+                const mediaPromise = html2canvas(modal, {
+                    backgroundColor: BG, scale: 2,
+                    onclone: (_doc, el) => {
+                        expandClone(el);
+                        const tbl = el.querySelector('table');
+                        if (tbl) tbl.style.display = 'none';
+                        el.querySelectorAll('.modal-snap-btn, .modal-close').forEach(b => b.style.display = 'none');
+                    }
+                });
+
+                Promise.all([fieldsPromise, mediaPromise]).then(([fieldsCanvas, mediaCanvas]) => {
+                    const pad = 40;
+                    const targetH = Math.min(fieldsCanvas.height, mediaCanvas.height);
+                    const scaleF = targetH / fieldsCanvas.height;
+                    const scaleM = targetH / mediaCanvas.height;
+                    const dw_f = Math.round(fieldsCanvas.width * scaleF);
+                    const dw_m = Math.round(mediaCanvas.width * scaleM);
+                    const cellW = Math.max(dw_f, dw_m);
+
+                    const out = document.createElement('canvas');
+                    out.width = cellW * 2 + pad;
+                    out.height = targetH;
+                    const ctx = out.getContext('2d');
+                    ctx.fillStyle = BG;
+                    ctx.fillRect(0, 0, out.width, out.height);
+                    ctx.drawImage(fieldsCanvas, 0, 0, fieldsCanvas.width, fieldsCanvas.height,
+                        (cellW - dw_f) / 2, 0, dw_f, targetH);
+                    ctx.drawImage(mediaCanvas, 0, 0, mediaCanvas.width, mediaCanvas.height,
+                        cellW + pad + (cellW - dw_m) / 2, 0, dw_m, targetH);
+                    downloadCanvas(out, `${title}_side-by-side.png`);
+                });
+            }
+        }
+
         function closeModal(event) {
             if (event && event.target !== event.currentTarget) return;
             document.getElementById('modalOverlay').classList.remove('active');
@@ -4348,7 +4990,25 @@
         }
         
         function processCSV(text) {
-            const { headers, data } = parseCSV(text);
+            processParsedRows(parseCSV(text));
+        }
+
+        function processJSON(text) {
+            processParsedRows(parseJSON(text));
+        }
+
+        // Dispatch to the right parser based on filename, then run the shared
+        // ingestion pipeline (dimension analysis, dummy rows, rendering, etc.)
+        function processDataFile(text, filename) {
+            currentDatasetId = datasetIdFromFilename(filename);
+            if (isJsonFilename(filename)) {
+                processJSON(text);
+            } else {
+                processCSV(text);
+            }
+        }
+
+        function processParsedRows({ headers, data }) {
             csvHeaders = headers;
             
             // Detect media columns from headers
@@ -4407,12 +5067,22 @@
             userDimensionOrder = allDimensions.map(d => d.name);
             enabledDimensions = new Set(userDimensionOrder);
             
+            document.getElementById('vizConfigSection').style.display = 'block';
             renderDimensionList();
             renderDummySettingsUI();
             updateChangesIndicator();
             updateChangeLogUI();
             updateUndoRedoUI();
             updateVisualization();
+
+            discoverVizConfigsForDataset().then(() => {
+                const configs = getImportableVizConfigs();
+                if (configs.length === 1) {
+                    showVizConfigNotice(`Saved setup found: ${configs[0].label}. Click Import setup to apply.`);
+                } else if (configs.length > 1) {
+                    showVizConfigNotice(`${configs.length} saved setups found. Click Import setup to choose.`);
+                }
+            });
         }
         
         // ============================================================
@@ -4423,7 +5093,7 @@
                 if (!r.ok) throw new Error('Dataset load failed: ' + r.status);
                 return r.text();
             })
-            .then(csv => processCSV(csv))
+            .then(text => processDataFile(text, DATASET_URL))
             .catch(err => {
                 console.error(err);
                 const errDiv = document.createElement('div');

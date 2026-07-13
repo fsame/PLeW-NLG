@@ -1,3 +1,19 @@
 .hugo_build.lock
 public/
 .DS_Store
+
+# Large raw downloads — re-fetch using eval-data-raw/SOURCES.md
+eval-data-raw/**/*
+!eval-data-raw/SOURCES.md
+!eval-data-raw/GEM_HUMAN_EVAL_CATALOG.md
+
+# Generation-corpus staging (optional; not wired to demos yet)
+data-raw/**/*
+!data-raw/SOURCES.md
+
+.download-venv/
+
+# Embedded upstream snapshot — not part of this fork's history
+PLeW-main/
+# Manuscript drafts
+*.pdf

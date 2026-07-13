@@ -1,9 +1,11 @@
-baseURL = 'https://len-sprague.github.io/PLeW/'
+# Local dev: hugo server serves at http://localhost:1313/
+# GitHub Actions overrides this when deploying (see .github/workflows/hugo.yml).
+baseURL = '/'
 languageCode = 'en-us'
-title = 'PLeW'
+title = 'PLeW-NLG'
 
 [params]
-  description = 'Interactive multi-dimensional data visualizer'
+  description = 'Interactive exploration of human evaluation data across NLG tasks'
 
 [markup.goldmark.renderer]
   unsafe = true
