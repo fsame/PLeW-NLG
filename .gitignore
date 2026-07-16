@@ -2,10 +2,17 @@
 public/
 .DS_Store
 
-# Large raw downloads — re-fetch using eval-data-raw/SOURCES.md
-eval-data-raw/**/*
-!eval-data-raw/SOURCES.md
-!eval-data-raw/GEM_HUMAN_EVAL_CATALOG.md
+# Raw downloads and local catalog notes (not published)
+eval-data-raw/
+
+# Processed datasets without a live example page
+eval-data-processed/frank/
+eval-data-processed/vaquum/
+
+# Demo CSVs/presets for datasets without a live example page
+static/data/frank_*.csv
+static/data/plew-setup-frank-*.json
+static/data/flickr8k_crowd.csv
 
 # Generation-corpus staging (optional; not wired to demos yet)
 data-raw/**/*
