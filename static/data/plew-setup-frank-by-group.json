@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "kind": "plew-visualization-config",
+  "exportedAt": "2026-07-16T00:00:00.000Z",
+  "dataset": { "id": "frank_sentence.csv", "label": "frank_sentence.csv" },
+  "dimensions": {
+    "order": ["error_group", "model", "error_type", "annotator_index", "dataset", "split", "article_id", "sentence_index"],
+    "enabled": ["error_group", "model", "error_type"],
+    "encodings": { "error_group": "grid-x", "model": "grid-y", "error_type": "shape" }
+  },
+  "valueFilters": {
+    "error_group": ["semantic_frame", "discourse", "content_verifiability", "other"]
+  },
+  "styling": { "customColors": {}, "customShapes": {} },
+  "display": { "showItemCounts": true, "showDimensionNames": true, "uniformGridSizes": false, "outerPanelRowHeight": "200", "unifyInnerPanel": false, "innerPanelRowHeight": "56", "labelSize": "0.7", "labelColor": "#888888", "countSize": "0.6", "countColor": "#555555" },
+  "dummySettings": {}
+}

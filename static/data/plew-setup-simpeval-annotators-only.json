@@ -1,12 +1,12 @@
 {
   "version": 2,
   "kind": "plew-visualization-config",
-  "exportedAt": "2026-07-15T00:00:00.000Z",
-  "dataset": { "id": "webnlg2017_humaneval.csv", "label": "webnlg2017_humaneval.csv" },
+  "exportedAt": "2026-07-16T00:00:00.000Z",
+  "dataset": { "id": "simpeval.csv", "label": "simpeval.csv" },
   "dimensions": {
-    "order": ["system", "criterion", "score", "category", "type", "triplesize", "annotator_index", "mr_id"],
-    "enabled": ["system", "criterion", "score"],
-    "encodings": { "system": "grid-x", "criterion": "grid-y", "score": "color" }
+    "order": ["score_band", "annotator_index", "system", "sentence_id"],
+    "enabled": ["score_band", "annotator_index"],
+    "encodings": { "score_band": "grid-x", "annotator_index": "grid-y" }
   },
   "valueFilters": {},
   "styling": { "customColors": {}, "customShapes": {} },

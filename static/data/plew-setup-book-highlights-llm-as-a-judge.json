@@ -1,0 +1,75 @@
+{
+  "version": 2,
+  "kind": "plew-visualization-config",
+  "exportedAt": "2026-07-16T16:16:47.382Z",
+  "dataset": {
+    "id": "book_highlights_llm_as_a_judge.csv",
+    "label": "book_highlights_llm_as_a_judge.csv"
+  },
+  "dimensions": {
+    "order": [
+      "criterion",
+      "theme",
+      "book",
+      "winner_resolved",
+      "relation",
+      "winner_blind",
+      "candidate_a_side",
+      "candidate_b_side",
+      "confidence",
+      "sampling_mode",
+      "comparison_axis"
+    ],
+    "enabled": [
+      "criterion",
+      "comparison_axis",
+      "winner_resolved",
+      "confidence",
+      "relation"
+    ],
+    "encodings": {
+      "criterion": "",
+      "winner_resolved": "grid-x",
+      "relation": "color",
+      "winner_blind": "",
+      "candidate_a_side": "",
+      "candidate_b_side": "",
+      "comparison_axis": "grid-y",
+      "confidence": "panel-y"
+    }
+  },
+  "valueFilters": {
+    "dim::comparison_axis": [
+      "architecture"
+    ],
+    "dim::winner_resolved": [
+      "e2e",
+      "pipeline"
+    ]
+  },
+  "styling": {
+    "customColors": {
+      "pipeline": "#cb6c7f"
+    },
+    "customShapes": {}
+  },
+  "display": {
+    "showItemCounts": true,
+    "showDimensionNames": false,
+    "clusterPoints": true,
+    "uniformGridSizes": false,
+    "outerPanelRowHeight": "200",
+    "unifyInnerPanel": true,
+    "innerPanelRowHeight": "150",
+    "labelSize": "0.7",
+    "labelColor": "#888888",
+    "countSize": "0.6",
+    "countColor": "#555555"
+  },
+  "dummySettings": {
+    "visible": false,
+    "color": "#555555",
+    "opacity": 0,
+    "shape": "diamond"
+  }
+}

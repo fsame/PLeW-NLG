@@ -9,13 +9,8 @@ layout = "example-viz"
 [[viz_presets]]
 label = "Model × criterion"
 url = "data/plew-setup-summeval-by-model.json"
-default = true
 
 [[viz_presets]]
 label = "Expert vs crowd"
 url = "data/plew-setup-summeval-expert-vs-crowd.json"
-
-[[viz_presets]]
-label = "By article"
-url = "data/plew-setup-summeval-by-article.json"
 +++

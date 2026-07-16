@@ -124,24 +124,69 @@ def transform_preference(pairs: list[dict]) -> list[dict]:
     return rows
 
 
-def transform_faithfulness() -> list[dict]:
+def build_highlight_lookup(pairs: list[dict]) -> dict[str, dict]:
+    """Map highlight_id → candidate text and architecture metadata from preference pairs."""
+    lookup: dict[str, dict] = {}
+    for rec in pairs:
+        md = rec.get("metadata") or {}
+        for side in ("a", "b"):
+            highlight_id = clean(md.get(f"candidate_{side}_highlight_id"))
+            if not highlight_id:
+                continue
+            lookup[highlight_id] = {
+                "highlight": clean(md.get(f"candidate_{side}_text") or md.get(f"candidate_{side}")),
+                "system": clean(md.get(f"candidate_{side}_architecture") or rec.get(f"candidate_{side}_source_side")),
+                "size_label": clean(md.get(f"candidate_{side}_size_label")),
+                "model": clean(md.get(f"candidate_{side}_model")),
+                "comparison_axis": clean(md.get("comparison_axis")),
+            }
+    return lookup
+
+
+def normalize_faithfulness_system(system: str, size_label: str) -> tuple[str, str]:
+    """Some raw records store size in `system`; swap back when needed."""
+    if system in {"small", "large"} and size_label in {"small", "large"}:
+        return "", system
+    if system in {"small", "large"}:
+        return "", system
+    return system, size_label
+
+
+def transform_faithfulness(pairs: list[dict]) -> list[dict]:
     data = json.loads((RAW / "llm_judge_faithfulness.json").read_text(encoding="utf-8"))
+    highlight_lookup = build_highlight_lookup(pairs)
     rows: list[dict] = []
-    for i, rec in enumerate(data.values(), start=1):
+    row_id = 0
+    for rec in data.values():
+        pair_id = clean(rec.get("pair_id"))
+        highlight_id = clean(rec.get("highlight_id"))
+        meta = highlight_lookup.get(highlight_id, {})
+        system, size_label = normalize_faithfulness_system(
+            clean(rec.get("system")),
+            clean(rec.get("size_label") or meta.get("size_label")),
+        )
+        if not system:
+            system = meta.get("system", "")
+        if not size_label:
+            size_label = meta.get("size_label", "")
+        model = clean(rec.get("model") or meta.get("model"))
+        row_id += 1
         rows.append(
             {
-                "ID": f"bookhl-faith-{i:05d}",
+                "ID": f"bookhl-faith-{row_id:05d}",
                 "dim::book": clean(rec.get("book_title")),
                 "dim::theme": clean(rec.get("theme")),
                 "dim::relation": clean(rec.get("relation")),
-                "dim::system": clean(rec.get("system")),
-                "dim::model": clean(rec.get("model")),
-                "dim::size_label": clean(rec.get("size_label")),
+                "dim::comparison_axis": meta.get("comparison_axis", ""),
+                "dim::system": system,
+                "dim::model": model,
+                "dim::size_label": size_label,
                 "dim::factually_accurate": clean(rec.get("factually_accurate")),
                 "dim::divergence_type": clean(rec.get("divergence_type")),
                 "res::severity": clean(rec.get("severity")),
-                "desc::highlight_id": clean(rec.get("highlight_id")),
-                "desc::pair_id": clean(rec.get("pair_id")),
+                "desc::highlight_id": highlight_id,
+                "desc::pair_id": pair_id,
+                "desc::highlight": meta.get("highlight", ""),
                 "desc::book_id": clean(rec.get("book_id")),
                 "desc::book_title": clean(rec.get("book_title")),
                 "desc::author": clean(rec.get("author")),
@@ -172,7 +217,7 @@ def main() -> None:
     all_pairs = load_preference_pairs()
     sampled_pairs = stratified_pair_sample(all_pairs, PAIR_SAMPLE_N, SEED)
     pref_rows = transform_preference(sampled_pairs)
-    faith_rows = transform_faithfulness()
+    faith_rows = transform_faithfulness(all_pairs)
 
     write_csv(OUTPUT_CSV, pref_rows)
     write_csv(OUTPUT_FAITHFULNESS_CSV, faith_rows)

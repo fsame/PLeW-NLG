@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "kind": "plew-visualization-config",
+  "exportedAt": "2026-07-16T15:51:49.272Z",
+  "dataset": {
+    "id": "seahorse.csv",
+    "label": "seahorse.csv"
+  },
+  "dimensions": {
+    "order": [
+      "criterion",
+      "model",
+      "worker_lang",
+      "rating",
+      "dataset",
+      "article_id"
+    ],
+    "enabled": [
+      "criterion",
+      "worker_lang",
+      "model",
+      "rating"
+    ],
+    "encodings": {
+      "criterion": "grid-x",
+      "model": "grid-y",
+      "worker_lang": "color",
+      "rating": "panel-y"
+    }
+  },
+  "valueFilters": {
+    "dim::worker_lang": [
+      "en-US",
+      "vi",
+      "de"
+    ],
+    "dim::rating": [
+      "No",
+      "Yes"
+    ],
+    "dim::model": [
+      "1shot",
+      "finetuned",
+      "reference"
+    ]
+  },
+  "styling": {
+    "customColors": {},
+    "customShapes": {}
+  },
+  "display": {
+    "showItemCounts": true,
+    "showDimensionNames": true,
+    "clusterPoints": false,
+    "uniformGridSizes": false,
+    "outerPanelRowHeight": "200",
+    "unifyInnerPanel": false,
+    "innerPanelRowHeight": "56",
+    "labelSize": "0.7",
+    "labelColor": "#888888",
+    "countSize": "0.6",
+    "countColor": "#555555"
+  },
+  "dummySettings": {
+    "visible": false,
+    "color": "#555555",
+    "opacity": 0,
+    "shape": "diamond"
+  }
+}

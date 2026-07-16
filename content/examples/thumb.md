@@ -7,15 +7,6 @@ dataset_url = "data/thumb.csv"
 layout = "example-viz"
 
 [[viz_presets]]
-label = "Model × criterion"
-url = "data/plew-setup-thumb-by-model.json"
-default = true
-
-[[viz_presets]]
-label = "Human vs machine"
-url = "data/plew-setup-thumb-human-vs-machine.json"
-
-[[viz_presets]]
-label = "By image"
-url = "data/plew-setup-thumb-by-image.json"
+label = "Model × score"
+url = "data/plew-setup-thumb.json"
 +++

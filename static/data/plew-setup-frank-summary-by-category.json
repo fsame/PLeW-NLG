@@ -1,12 +1,12 @@
 {
   "version": 2,
   "kind": "plew-visualization-config",
-  "exportedAt": "2026-07-15T00:00:00.000Z",
-  "dataset": { "id": "simpeval.csv", "label": "simpeval.csv" },
+  "exportedAt": "2026-07-16T00:00:00.000Z",
+  "dataset": { "id": "frank_summary.csv", "label": "frank_summary.csv" },
   "dimensions": {
-    "order": ["sentence_id", "system", "score_band", "annotator_index"],
-    "enabled": ["sentence_id", "system", "score_band"],
-    "encodings": { "sentence_id": "panel-x", "system": "grid-x", "score_band": "grid-y" }
+    "order": ["EntE_clear", "OutE_clear", "CorefE_clear", "GramE_clear", "model", "factuality_band", "dataset", "split", "article_id"],
+    "enabled": ["EntE_clear", "OutE_clear", "model", "factuality_band"],
+    "encodings": { "EntE_clear": "grid-x", "OutE_clear": "grid-y", "model": "color", "factuality_band": "shape" }
   },
   "valueFilters": {},
   "styling": { "customColors": {}, "customShapes": {} },

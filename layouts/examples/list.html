@@ -114,16 +114,17 @@
     <div class="page-header">
         <a class="back-link" href="{{ .Site.BaseURL }}">← Full Editor</a>
         <h1>Example Datasets</h1>
-        <p>Human evaluation and annotation datasets for NLG — grouped by task, explore in the interactive visualizer</p>
+        <p>Human evaluation and annotation datasets for NLG.</p>
     </div>
     <div class="gallery-page">
         {{ $pages := .Pages }}
         {{ $sections := slice
-            (dict "task" "data-to-text" "title" "Data-to-text" "desc" "Structured inputs to fluent text — KG/triple, table, or slot-filling generation with human quality judgments.")
-            (dict "task" "summarization" "title" "Summarization" "desc" "Abstractive and multilingual summary evaluation with criterion-level human ratings.")
-            (dict "task" "simplification" "title" "Text simplification" "desc" "Readable rewrite quality — per-output scores and rater agreement on simplified text.")
-            (dict "task" "llm-as-judge" "title" "LLM-as-judge" "desc" "Pairwise or criterion judgments from LLM evaluators on generated outputs.")
-            (dict "task" "image-captioning" "title" "Image captioning" "desc" "Image–caption human judgments with local media in the record window.")
+            (dict "task" "data-to-text" "title" "Data-to-text")
+            (dict "task" "referring-expression-generation" "title" "Referring Expression Generation")
+            (dict "task" "summarization" "title" "Summarization")
+            (dict "task" "simplification" "title" "Text simplification")
+            (dict "task" "image-captioning" "title" "Image captioning")
+            (dict "task" "llm-as-judge" "title" "LLM-as-judge")
         }}
         {{ range $sections }}
             {{ $section := . }}

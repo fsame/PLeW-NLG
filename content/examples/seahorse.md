@@ -7,15 +7,6 @@ dataset_url = "data/seahorse.csv"
 layout = "example-viz"
 
 [[viz_presets]]
-label = "Model × criterion"
-url = "data/plew-setup-seahorse-by-model.json"
-default = true
-
-[[viz_presets]]
-label = "By dataset"
-url = "data/plew-setup-seahorse-by-dataset.json"
-
-[[viz_presets]]
-label = "By language"
-url = "data/plew-setup-seahorse-by-language.json"
+label = "Criterion × model by language"
+url = "data/plew-setup-seahorse.json"
 +++

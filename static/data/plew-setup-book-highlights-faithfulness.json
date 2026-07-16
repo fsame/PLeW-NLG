@@ -1,0 +1,64 @@
+{
+  "version": 2,
+  "kind": "plew-visualization-config",
+  "exportedAt": "2026-07-16T19:38:52.025Z",
+  "dataset": {
+    "id": "book_highlights_llm_as_a_judge_faithfulness.csv",
+    "label": "book_highlights_llm_as_a_judge_faithfulness.csv"
+  },
+  "dimensions": {
+    "order": [
+      "book",
+      "theme",
+      "comparison_axis",
+      "relation",
+      "model",
+      "divergence_type",
+      "system",
+      "size_label",
+      "factually_accurate"
+    ],
+    "enabled": [
+      "divergence_type",
+      "model",
+      "system"
+    ],
+    "encodings": {
+      "model": "grid-x",
+      "divergence_type": "grid-y",
+      "system": "color"
+    }
+  },
+  "valueFilters": {
+    "dim::comparison_axis": [
+      "architecture"
+    ],
+    "dim::system": [
+      "e2e",
+      "pipeline"
+    ]
+  },
+  "styling": {
+    "customColors": {},
+    "customShapes": {}
+  },
+  "display": {
+    "showItemCounts": false,
+    "showDimensionNames": false,
+    "clusterPoints": true,
+    "uniformGridSizes": false,
+    "outerPanelRowHeight": "200",
+    "unifyInnerPanel": false,
+    "innerPanelRowHeight": "56",
+    "labelSize": "0.7",
+    "labelColor": "#888888",
+    "countSize": "0.6",
+    "countColor": "#555555"
+  },
+  "dummySettings": {
+    "visible": false,
+    "color": "#555555",
+    "opacity": 0,
+    "shape": "diamond"
+  }
+}

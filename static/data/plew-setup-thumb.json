@@ -1,0 +1,68 @@
+{
+  "version": 2,
+  "kind": "plew-visualization-config",
+  "exportedAt": "2026-07-16T20:53:31.379Z",
+  "dataset": {
+    "id": "thumb.csv",
+    "label": "thumb.csv"
+  },
+  "dimensions": {
+    "order": [
+      "score",
+      "model",
+      "criterion",
+      "image_id",
+      "is_human"
+    ],
+    "enabled": [
+      "score",
+      "criterion",
+      "model"
+    ],
+    "encodings": {
+      "score": "grid-x",
+      "model": "grid-y",
+      "criterion": "color"
+    }
+  },
+  "valueFilters": {
+    "dim::criterion": [
+      "precision",
+      "recall"
+    ],
+    "dim::score": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "dim::is_human": [
+      "model",
+      "human"
+    ]
+  },
+  "styling": {
+    "customColors": {},
+    "customShapes": {}
+  },
+  "display": {
+    "showItemCounts": false,
+    "showDimensionNames": true,
+    "clusterPoints": false,
+    "uniformGridSizes": false,
+    "outerPanelRowHeight": "200",
+    "unifyInnerPanel": false,
+    "innerPanelRowHeight": "56",
+    "labelSize": "1",
+    "labelColor": "#888888",
+    "countSize": "0.65",
+    "countColor": "#555555"
+  },
+  "dummySettings": {
+    "visible": false,
+    "color": "#555555",
+    "opacity": 0,
+    "shape": "diamond"
+  }
+}

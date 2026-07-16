@@ -6,10 +6,11 @@ Output: `eval-data-processed/book_highlights_llm_as_a_judge/`
 
 ## Suitability
 
-**Pass (pairwise preference).** LLM A/B judgments on generated book highlights with
-five criteria plus overall preference, resolved winners, and inspectable candidate
-text. **Marginal (faithfulness)** — raw file contains a single schema example only;
-exported separately as `book_highlights_llm_as_a_judge_plew_faithfulness.csv` (1 row).
+**Pass (pairwise preference and faithfulness).** LLM A/B judgments on generated book
+highlights with five criteria plus overall preference, resolved winners, and inspectable
+candidate text. Faithfulness checks (factuality vs. source reviews) are exported
+separately as `book_highlights_llm_as_a_judge_plew_faithfulness.csv` (5,493 rows,
+full corpus).
 
 ## Observation unit
 
@@ -33,8 +34,11 @@ exported separately as `book_highlights_llm_as_a_judge_plew_faithfulness.csv` (1
 
 ### Faithfulness (`llm_judge_faithfulness.json`)
 
-1. Loaded JSON dict (1 record).
-2. Mapped scalar fields to `dim::` / `desc::` / `res::` without reshape.
+1. Loaded JSON dict (5,493 highlight-level factuality checks keyed by `highlight_id`).
+2. Joined candidate highlight text and architecture metadata from all preference pairs via
+   `highlight_id`.
+3. Normalized mislabeled `system` values (`small`/`large` swapped into architecture).
+4. Mapped scalar fields to `dim::` / `desc::` / `res::` without reshape.
 
 ## Subset
 
@@ -45,6 +49,7 @@ exported separately as `book_highlights_llm_as_a_judge_plew_faithfulness.csv` (1
 | Stratify on | `comparison_axis` (150 architecture + 150 size) |
 | Criteria per pair | 6 (5 criteria + overall) |
 | `book_highlights_llm_as_a_judge_plew_ready.csv` rows | 1,800 |
+| `book_highlights_llm_as_a_judge_plew_faithfulness.csv` rows | 5,493 |
 
 Full melt of all pairs would be ~32,700 rows; subset keeps within demo scale.
 
@@ -87,7 +92,8 @@ Full melt of all pairs would be ~32,700 rows; subset keeps within demo scale.
 | `dim::book` | `book_title` |
 | `dim::theme` | `theme` |
 | `dim::relation` | `relation` |
-| `dim::system` | `system` |
+| `dim::comparison_axis` | preference join via `highlight_id` |
+| `dim::system` | `system` (normalized from preference join when mislabeled) |
 | `dim::model` | `model` |
 | `dim::size_label` | `size_label` |
 | `dim::factually_accurate` | `factually_accurate` |
@@ -95,6 +101,7 @@ Full melt of all pairs would be ~32,700 rows; subset keeps within demo scale.
 | `res::severity` | `severity` (1–5) |
 | `desc::highlight_id` | `highlight_id` |
 | `desc::pair_id` | `pair_id` (links to preference records) |
+| `desc::highlight` | preference join: `metadata.candidate_*_text` |
 | `desc::book_id` | `book_id` |
 | `desc::book_title` | `book_title` |
 | `desc::author` | `author` |
@@ -112,16 +119,18 @@ Full melt of all pairs would be ~32,700 rows; subset keeps within demo scale.
 
 **Faithfulness (`book_highlights_llm_as_a_judge_plew_faithfulness.csv`):**
 
-- Demo only (1 row). Use record window; grid not meaningful until more records exist.
+- **Grid X:** `system` (e2e vs pipeline)
+- **Grid Y:** `factually_accurate`
+- **Color:** `divergence_type`
+- **Filter:** `comparison_axis` when comparing architecture vs size pairs
 
 ## Known limitations
 
 - Source book/review text is not included — only generated highlight candidates.
 - `dim::theme` mixes relation types (`author`, `previousWork`, …) with free-text
   theme labels from some books (46 values in subset).
-- Faithfulness export is a schema placeholder (1 of 5,448+ potential checks).
-- `pair_id` links preference and faithfulness records but only one faithfulness
-  example is present in raw data.
+- `pair_id` links preference and faithfulness records; preference demo remains a
+  300-pair subset while faithfulness is published in full.
 
 ## Reproduce
 
@@ -129,4 +138,6 @@ Full melt of all pairs would be ~32,700 rows; subset keeps within demo scale.
 python3 eval-data-processed/book_highlights_llm_as_a_judge/transform.py
 python3 .cursor/skills/plew-prepare-dataset/scripts/validate_plew_csv.py \
   eval-data-processed/book_highlights_llm_as_a_judge/book_highlights_llm_as_a_judge_plew_ready.csv
+python3 .cursor/skills/plew-prepare-dataset/scripts/validate_plew_csv.py \
+  eval-data-processed/book_highlights_llm_as_a_judge/book_highlights_llm_as_a_judge_plew_faithfulness.csv
 ```
