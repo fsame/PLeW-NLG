@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "kind": "plew-visualization-config",
+  "exportedAt": "2026-07-15T00:00:00.000Z",
+  "dataset": { "id": "flickr8k.csv", "label": "flickr8k.csv" },
+  "dimensions": {
+    "order": ["score", "annotator_index", "caption_origin", "caption_slot", "demo_image"],
+    "enabled": ["score", "annotator_index", "caption_origin"],
+    "encodings": { "score": "grid-x", "annotator_index": "grid-y", "caption_origin": "color" }
+  },
+  "valueFilters": {},
+  "styling": { "customColors": {}, "customShapes": {} },
+  "display": { "showItemCounts": true, "showDimensionNames": true, "uniformGridSizes": false, "outerPanelRowHeight": "200", "unifyInnerPanel": false, "innerPanelRowHeight": "56", "labelSize": "0.7", "labelColor": "#888888", "countSize": "0.6", "countColor": "#555555" },
+  "dummySettings": {}
+}

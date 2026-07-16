@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "kind": "plew-visualization-config",
+  "exportedAt": "2026-07-15T00:00:00.000Z",
+  "dataset": { "id": "webnlg2017_humaneval.csv", "label": "webnlg2017_humaneval.csv" },
+  "dimensions": {
+    "order": ["system", "criterion", "score", "category", "type", "triplesize", "annotator_index", "mr_id"],
+    "enabled": ["system", "criterion", "score"],
+    "encodings": { "system": "grid-x", "criterion": "grid-y", "score": "color" }
+  },
+  "valueFilters": {},
+  "styling": { "customColors": {}, "customShapes": {} },
+  "display": { "showItemCounts": true, "showDimensionNames": true, "uniformGridSizes": false, "outerPanelRowHeight": "200", "unifyInnerPanel": false, "innerPanelRowHeight": "56", "labelSize": "0.7", "labelColor": "#888888", "countSize": "0.6", "countColor": "#555555" },
+  "dummySettings": {}
+}
