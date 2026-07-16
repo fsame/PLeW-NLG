@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "kind": "plew-visualization-config",
+  "exportedAt": "2026-07-15T00:00:00.000Z",
+  "dataset": { "id": "seahorse.csv", "label": "seahorse.csv" },
+  "dimensions": {
+    "order": ["dataset", "model", "criterion", "rating", "worker_lang", "article_id"],
+    "enabled": ["dataset", "model", "criterion", "rating"],
+    "encodings": { "dataset": "panel-x", "model": "grid-x", "criterion": "grid-y", "rating": "color" }
+  },
+  "valueFilters": {},
+  "styling": { "customColors": {}, "customShapes": {} },
+  "display": { "showItemCounts": true, "showDimensionNames": true, "uniformGridSizes": false, "outerPanelRowHeight": "200", "unifyInnerPanel": false, "innerPanelRowHeight": "56", "labelSize": "0.7", "labelColor": "#888888", "countSize": "0.6", "countColor": "#555555" },
+  "dummySettings": {}
+}

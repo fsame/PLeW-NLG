@@ -156,6 +156,11 @@
             opacity: 1;
             pointer-events: auto;
         }
+
+        .floating-legend.encoding-legend-suppressed {
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
         
         .floating-legend-title {
             font-size: 0.7rem;
@@ -461,6 +466,25 @@
             color: #aaa;
             white-space: nowrap;
         }
+
+        .dimension-encoding-select {
+            font-size: 0.6rem;
+            padding: 2px 4px;
+            border-radius: 4px;
+            border: 1px solid #3d4650;
+            background: #2d3640;
+            color: #aaa;
+            max-width: 76px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .dimension-encoding-select.encoding-grid-x { background: #ff6b6b33; color: #ff6b6b; border-color: #ff6b6b55; }
+        .dimension-encoding-select.encoding-grid-y { background: #ffd93d33; color: #ffd93d; border-color: #ffd93d55; }
+        .dimension-encoding-select.encoding-panel-x { background: #6bcb7733; color: #6bcb77; border-color: #6bcb7755; }
+        .dimension-encoding-select.encoding-panel-y { background: #4d96ff33; color: #4d96ff; border-color: #4d96ff55; }
+        .dimension-encoding-select.encoding-color { background: #9b59b633; color: #c39bd3; border-color: #9b59b655; }
+        .dimension-encoding-select.encoding-shape { background: #e67e2233; color: #e67e22; border-color: #e67e2255; }
         
         .encoding-grid-x { background: #ff6b6b33; color: #ff6b6b; }
         .encoding-grid-y { background: #ffd93d33; color: #ffd93d; }
@@ -832,6 +856,56 @@
             background: #232a33;
             padding: 2px 4px;
             border-radius: 3px;
+        }
+
+        /* Outer encoding axis titles (toggle via #vizContainer.show-dimension-names) */
+        .grid-viz-wrap {
+            display: inline-block;
+        }
+
+        .grid-viz-body {
+            display: flex;
+            align-items: stretch;
+            gap: 6px;
+        }
+
+        .encoding-axis-title {
+            display: none;
+            font-size: calc(var(--label-font-size) * 0.95);
+            color: var(--label-color);
+        }
+
+        #vizContainer.show-dimension-names .encoding-axis-title {
+            display: block;
+        }
+
+        .encoding-axis-title-x {
+            text-align: center;
+            margin-bottom: 4px;
+            padding: 2px 6px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .encoding-axis-title-y {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            min-width: 1.1rem;
+            padding: 4px 2px;
+            background: #1a1f26;
+            border-radius: 6px;
+        }
+
+        #vizContainer.show-dimension-names .encoding-axis-title-y {
+            display: flex;
+        }
+
+        .encoding-axis-title-color {
+            margin-top: 8px;
+            text-align: left;
+            font-size: calc(var(--label-font-size) * 0.9);
+            font-weight: 600;
         }
         
         /* Hover Tooltip */
@@ -1300,6 +1374,173 @@
             justify-content: flex-start;
             text-align: left;
         }
+
+        .viz-preset-bar {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            background: #1a1f26;
+            border-bottom: 1px solid #2d3640;
+            flex-wrap: wrap;
+        }
+
+        .viz-preset-label {
+            font-size: 0.8rem;
+            color: #8899a6;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .viz-preset-choices {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .viz-preset-btn {
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid #2d3640;
+            background: #232a33;
+            color: #c8d0d8;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+        }
+
+        .viz-preset-btn:hover {
+            border-color: #4ecdc4;
+            color: #e8e8e8;
+        }
+
+        .viz-preset-btn.active {
+            border-color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.15);
+            color: #4ecdc4;
+        }
+
+        .viz-toolbar {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 20px;
+            background: #1a1f26;
+            border-bottom: 1px solid #2d3640;
+            flex-wrap: wrap;
+        }
+
+        .viz-toolbar .viz-preset-bar {
+            display: flex;
+            flex: 1;
+            padding: 0;
+            background: transparent;
+            border-bottom: none;
+            min-width: 0;
+        }
+
+        .encoding-legend-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+            color: #c8d0d8;
+            cursor: pointer;
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        .encoding-legend-toggle input {
+            accent-color: #4ecdc4;
+        }
+
+        .encoding-legend-bar {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #151a20;
+            border-bottom: 1px solid #2d3640;
+        }
+
+        .encoding-roles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .encoding-role-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid #2d3640;
+            background: #1a1f26;
+            font-size: 0.75rem;
+        }
+
+        .encoding-role-label {
+            color: #8899a6;
+            font-weight: 500;
+        }
+
+        .encoding-role-dim {
+            color: #e8e8e8;
+        }
+
+        .encoding-swatch-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .encoding-swatch-title {
+            font-size: 0.72rem;
+            color: #8899a6;
+            margin-right: 4px;
+            white-space: nowrap;
+        }
+
+        .encoding-swatch-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 9px;
+            border-radius: 999px;
+            border: 1px solid #2d3640;
+            background: #1a1f26;
+            color: #c8d0d8;
+            font-size: 0.72rem;
+            cursor: pointer;
+        }
+
+        .encoding-swatch-chip:hover {
+            border-color: #4ecdc4;
+        }
+
+        .encoding-swatch-chip.filtered-out {
+            opacity: 0.35;
+            text-decoration: line-through;
+        }
+
+        .encoding-swatch-chip .legend-swatch {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .encoding-swatch-chip .legend-shape {
+            width: 12px;
+            height: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         
         /* Edit mode hint */
         .edit-hint {
@@ -1458,6 +1699,14 @@
         .snapshot-light .grid-axis-label {
             background: #e8e8e8;
             color: #444;
+        }
+
+        .snapshot-light .encoding-axis-title-y {
+            background: #f0f0f0;
+        }
+
+        .snapshot-light .encoding-axis-title {
+            color: #333;
         }
 
         .snapshot-light .data-point.modified {
@@ -1816,7 +2065,8 @@
                     <div class="edit-hint">
                         <strong>✏️ Edit Mode</strong>
                         <ul>
-                            <li>Drag dimensions to reorder axes</li>
+                            <li>Drag to reorder — roles auto-assign by list order</li>
+                            <li>Use the dropdown to override Grid X/Y, Color, Shape, etc.</li>
                             <li>Drag data points to reclassify</li>
                             <li>Right-click points to change color/shape</li>
                             <li>Click legend swatches to customize colors/shapes</li>
@@ -1974,11 +2224,28 @@
                         <input type="number" id="innerPanelRowHeight" min="24" max="400" step="1" value="56" disabled oninput="applyUnifiedInnerPanels()">
                     </label>
                     <label class="viz-checkbox"><input type="checkbox" id="showItemCounts" onchange="toggleItemCounts()"> Show item counts</label>
+                    <label class="viz-checkbox"><input type="checkbox" id="showDimensionNames" onchange="toggleDimensionNames()"> Show dimension names</label>
                     <button class="btn btn-success btn-small" onclick="downloadCSV()">📥 Download CSV</button>
                     <button class="btn btn-secondary btn-small" onclick="downloadSnapshot(false)">📷 Dark</button>
                     <button class="btn btn-secondary btn-small" onclick="downloadSnapshot(true)">📷 Light</button>
                     <button class="btn btn-secondary btn-small" onclick="openReportModal()">📋 Report</button>
                 </div>
+            </div>
+
+            <div class="viz-toolbar" id="vizToolbar">
+                <div class="viz-preset-bar" id="vizPresetBar">
+                    <span class="viz-preset-label">View as:</span>
+                    <div class="viz-preset-choices" id="vizPresetChoices"></div>
+                </div>
+                <label class="encoding-legend-toggle" title="Show color and shape keys above the grid">
+                    <input type="checkbox" id="showEncodingLegendToggle" onchange="toggleEncodingLegend(this.checked)">
+                    Show color & shape
+                </label>
+            </div>
+
+            <div class="encoding-legend-bar" id="encodingLegendBar">
+                <div class="encoding-swatch-row" id="encodingColorLegend"></div>
+                <div class="encoding-swatch-row" id="encodingShapeLegend"></div>
             </div>
             
             <div class="grid-grid-container" id="vizContainer">
@@ -2069,6 +2336,11 @@
     <script>
         const DATASET_URL = "{{ .Params.dataset_url | absURL | safeJS }}";
         const SITE_BASE = "{{ .Site.BaseURL | safeJS }}";
+        {{ $vizPresets := slice }}
+        {{ range .Params.viz_presets }}
+        {{ $vizPresets = $vizPresets | append (dict "label" .label "url" (.url | absURL) "default" (default false .default)) }}
+        {{ end }}
+        const PAGE_VIZ_PRESETS = {{ $vizPresets | jsonify | safeJS }};
         // ============================================================
         // CONFIGURATION
         // ============================================================
@@ -2083,10 +2355,61 @@
             { key: 'grid-x', label: 'Grid X', class: 'encoding-grid-x' },
             { key: 'grid-y', label: 'Grid Y', class: 'encoding-grid-y' },
             { key: 'color', label: 'Color', class: 'encoding-color' },
-            { key: 'panel-x', label: 'grid X', class: 'encoding-panel-x' },
-            { key: 'panel-y', label: 'grid Y', class: 'encoding-panel-y' },
+            { key: 'panel-x', label: 'Panel X', class: 'encoding-panel-x' },
+            { key: 'panel-y', label: 'Panel Y', class: 'encoding-panel-y' },
             { key: 'shape', label: 'Shape', class: 'encoding-shape' }
         ];
+
+        const ENCODING_KEY_TO_FIELD = {
+            'grid-x': 'gridX',
+            'grid-y': 'gridY',
+            'color': 'color',
+            'panel-x': 'panelX',
+            'panel-y': 'panelY',
+            'shape': 'shape'
+        };
+
+        function getEncodingLabel(key) {
+            return ENCODING_LABELS.find(e => e.key === key) || null;
+        }
+
+        function autoAssignEncodingsFromOrder() {
+            dimensionEncodings = {};
+            const slots = ENCODING_LABELS.map(e => e.key);
+            let slotIdx = 0;
+            userDimensionOrder.forEach(name => {
+                if (!enabledDimensions.has(name)) return;
+                if (slotIdx < slots.length) {
+                    dimensionEncodings[name] = slots[slotIdx++];
+                }
+            });
+        }
+
+        function buildEncodings() {
+            const encodings = {};
+            Object.entries(dimensionEncodings).forEach(([dimName, encKey]) => {
+                if (!encKey || !enabledDimensions.has(dimName)) return;
+                const dim = allDimensions.find(d => d.name === dimName);
+                const field = ENCODING_KEY_TO_FIELD[encKey];
+                if (dim && field && !encodings[field]) encodings[field] = dim;
+            });
+            return encodings;
+        }
+
+        function setDimensionEncoding(dimName, encKey) {
+            if (encKey) {
+                Object.keys(dimensionEncodings).forEach(name => {
+                    if (name !== dimName && dimensionEncodings[name] === encKey) {
+                        dimensionEncodings[name] = '';
+                    }
+                });
+                dimensionEncodings[dimName] = encKey;
+            } else {
+                dimensionEncodings[dimName] = '';
+            }
+            updateDimensionListEncodings();
+            updateVisualization();
+        }
         
         const RESERVED_COLUMNS = ['description', 'title', 'name'];
         
@@ -2208,7 +2531,8 @@
                 },
                 dimensions: {
                     order: [...userDimensionOrder],
-                    enabled: [...enabledDimensions]
+                    enabled: [...enabledDimensions],
+                    encodings: { ...dimensionEncodings }
                 },
                 valueFilters,
                 styling: {
@@ -2217,6 +2541,7 @@
                 },
                 display: {
                     showItemCounts: !!document.getElementById('showItemCounts')?.checked,
+                    showDimensionNames: !!document.getElementById('showDimensionNames')?.checked,
                     uniformGridSizes: !!document.getElementById('uniformgrids')?.checked,
                     outerPanelRowHeight: document.getElementById('outerPanelRowHeight')?.value ?? '200',
                     unifyInnerPanel: !!document.getElementById('unifyInnerPanel')?.checked,
@@ -2258,6 +2583,18 @@
             
             const enabled = (config.dimensions?.enabled || order).filter(name => knownNames.has(name));
             enabledDimensions = new Set(enabled.length ? enabled : order);
+
+            dimensionEncodings = {};
+            if (config.dimensions?.encodings && typeof config.dimensions.encodings === 'object') {
+                Object.entries(config.dimensions.encodings).forEach(([name, key]) => {
+                    if (!knownNames.has(name)) return;
+                    if (key && ENCODING_LABELS.some(e => e.key === key)) {
+                        dimensionEncodings[name] = key;
+                    }
+                });
+            } else {
+                autoAssignEncodingsFromOrder();
+            }
             
             dimensionValueFilters = {};
             Object.entries(config.valueFilters || {}).forEach(([key, visible]) => {
@@ -2284,6 +2621,8 @@
             };
             setChecked('showItemCounts', display.showItemCounts);
             showItemCounts = !!display.showItemCounts;
+            setChecked('showDimensionNames', display.showDimensionNames);
+            showDimensionNames = !!display.showDimensionNames;
             setChecked('uniformgrids', display.uniformGridSizes);
             uniformgridSizes = !!display.uniformGridSizes;
             setValue('outerPanelRowHeight', display.outerPanelRowHeight);
@@ -2348,6 +2687,8 @@
         }
 
         let discoveredVizConfigs = [];
+        let pageVizPresets = [];
+        let activeVizPresetLabel = null;
 
         function datasetBaseName(datasetId) {
             return (datasetId || 'dataset').replace(/\.[^.]+$/, '');
@@ -2357,7 +2698,10 @@
             const base = datasetBaseName(datasetId);
             return [
                 `plew-setup-${base}.json`,
-                `${base}.plew-setup.json`
+                `${base}.plew-setup.json`,
+                `plew-setup-${base}-by-model.json`,
+                `plew-setup-${base}-human-vs-machine.json`,
+                `plew-setup-${base}-by-image.json`
             ];
         }
 
@@ -2365,10 +2709,112 @@
             return obj && obj.kind === VIZ_CONFIG_KIND;
         }
 
-        function addDiscoveredVizConfig(label, config) {
+        function addDiscoveredVizConfig(label, config, options = {}) {
             if (!isVisualizationConfigPayload(config)) return;
-            if (discoveredVizConfigs.some(item => item.label === label)) return;
-            discoveredVizConfigs.push({ label, config });
+            const key = options.key || label;
+            if (discoveredVizConfigs.some(item => item.key === key)) return;
+            discoveredVizConfigs.push({
+                key,
+                label,
+                config,
+                default: !!options.default,
+                source: options.source || 'discovered'
+            });
+        }
+
+        async function loadPageVizPresets() {
+            pageVizPresets = [];
+            for (const preset of PAGE_VIZ_PRESETS) {
+                const config = await tryFetchVizConfig(preset.url);
+                if (!config) continue;
+                const entry = {
+                    key: preset.label,
+                    label: preset.label,
+                    config,
+                    default: !!preset.default,
+                    source: 'page'
+                };
+                pageVizPresets.push(entry);
+                addDiscoveredVizConfig(preset.label, config, {
+                    key: preset.label,
+                    default: preset.default,
+                    source: 'page'
+                });
+            }
+        }
+
+        function getDefaultVizPreset() {
+            const pageDefault = pageVizPresets.find(item => item.default);
+            if (pageDefault) return pageDefault;
+            if (pageVizPresets.length) return pageVizPresets[0];
+            const discoveredDefault = discoveredVizConfigs.find(item => item.default);
+            if (discoveredDefault) return discoveredDefault;
+            return discoveredVizConfigs[0] || null;
+        }
+
+        function toggleEncodingLegend(enabled) {
+            showEncodingLegend = !!enabled;
+            const floating = document.getElementById('floatingLegend');
+            if (floating) floating.classList.toggle('encoding-legend-suppressed', showEncodingLegend);
+            if (encodings) {
+                updateEncodingLegendBar(encodings);
+                updateFloatingLegend(encodings);
+            }
+        }
+
+        function syncEncodingLegendToggle() {
+            const toggle = document.getElementById('showEncodingLegendToggle');
+            if (toggle) toggle.checked = showEncodingLegend;
+        }
+
+        function renderVizPresetBar() {
+            const bar = document.getElementById('vizPresetBar');
+            const choices = document.getElementById('vizPresetChoices');
+            if (!bar || !choices) return;
+
+            choices.innerHTML = '';
+            if (!pageVizPresets.length) {
+                bar.style.display = 'none';
+                return;
+            }
+
+            pageVizPresets.forEach(item => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'viz-preset-btn' + (item.label === activeVizPresetLabel ? ' active' : '');
+                btn.textContent = item.label;
+                btn.onclick = () => applyVizPreset(item.label, { silent: true });
+                choices.appendChild(btn);
+            });
+            bar.style.display = 'flex';
+        }
+
+        function applyVizPreset(label, options = {}) {
+            const preset = pageVizPresets.find(item => item.label === label)
+                || discoveredVizConfigs.find(item => item.label === label);
+            if (!preset) return false;
+            const applied = applyVisualizationConfig(preset.config, options);
+            if (applied) {
+                activeVizPresetLabel = preset.label;
+                renderVizPresetBar();
+            }
+            return applied;
+        }
+
+        function finalizeVizPresetLoad() {
+            renderVizPresetBar();
+            const defaultPreset = getDefaultVizPreset();
+            if (defaultPreset && defaultPreset.source === 'page') {
+                applyVizPreset(defaultPreset.label, { silent: true });
+                showVizConfigNotice(`Loaded view: ${defaultPreset.label}`);
+                return;
+            }
+            const configs = getImportableVizConfigs();
+            if (configs.length === 1) {
+                showVizConfigNotice(`Saved setup found: ${configs[0].label}. Click Import setup to apply.`);
+            } else if (configs.length > 1) {
+                showVizConfigNotice(`${configs.length} saved setups found. Click Import setup to choose.`);
+            }
         }
 
         async function tryFetchVizConfig(url) {
@@ -2407,14 +2853,17 @@
                 if (seen.has(url)) continue;
                 seen.add(url);
                 const config = await tryFetchVizConfig(url);
-                if (config) found.push({ label: name, config });
+                if (config) found.push({ label: name, config, key: name, source: 'discovered' });
             }
             return found;
         }
 
         async function discoverVizConfigsForDataset() {
             const configs = await discoverVizConfigsFromBaseUrl(getDatasetDirectoryUrl(), currentDatasetId);
-            configs.forEach(item => addDiscoveredVizConfig(item.label, item.config));
+            configs.forEach(item => addDiscoveredVizConfig(item.label, item.config, {
+                key: item.key || item.label,
+                source: item.source || 'discovered'
+            }));
         }
 
         function getImportableVizConfigs() {
@@ -2536,6 +2985,7 @@
         let allDimensions = null;
         let userDimensionOrder = [];
         let enabledDimensions = new Set();
+        let dimensionEncodings = {};
         let encodings = null;
         let modifiedRows = new Set();
         let changeLog = [];
@@ -2553,11 +3003,13 @@
         let preservedDimValues = {};
         let dimensionValueFilters = {};
         let currentDatasetId = null;
+        let showEncodingLegend = false;
         const VIZ_CONFIG_KIND = 'plew-visualization-config';
-        const VIZ_CONFIG_VERSION = 1;
+        const VIZ_CONFIG_VERSION = 2;
 
         // For the item counts above panels/sectors
         let showItemCounts = false;
+        let showDimensionNames = false;
         
         // Undo/Redo state
         let undoStack = [];
@@ -2787,7 +3239,7 @@
         }
 
         function fixSnapshotLabels(doc, clonedRoot) {
-            clonedRoot.querySelectorAll('.grid-row-label, .panel-axis-label.y-header').forEach(el => {
+            clonedRoot.querySelectorAll('.grid-row-label, .panel-axis-label.y-header, .encoding-axis-title-y').forEach(el => {
                 const text = el.textContent.trim();
                 el.textContent = '';
                 el.style.writingMode = 'horizontal-tb';
@@ -2812,8 +3264,8 @@
 
         function downloadSnapshot(lightMode) {
             const el = document.getElementById('vizContainer');
-            const gridGrid = el.querySelector('.grid-grid');
-            if (!gridGrid) {
+            const captureEl = el.querySelector('.grid-viz-wrap') || el.querySelector('.grid-grid');
+            if (!captureEl) {
                 alert('No visualization to capture');
                 return;
             }
@@ -2823,12 +3275,12 @@
             }
 
             if (lightMode) {
-                gridGrid.classList.add('snapshot-light');
+                captureEl.classList.add('snapshot-light');
             }
 
             const bgColor = lightMode ? '#ffffff' : '#0f1419';
 
-            html2canvas(gridGrid, {
+            html2canvas(captureEl, {
                 backgroundColor: bgColor,
                 scale: 2,
                 onclone: (clonedDoc, clonedGrid) => {
@@ -2837,7 +3289,7 @@
                 }
             }).then(canvas => {
                 if (lightMode) {
-                    gridGrid.classList.remove('snapshot-light');
+                    captureEl.classList.remove('snapshot-light');
                 }
                 canvas.toBlob(blob => {
                     const url = URL.createObjectURL(blob);
@@ -2849,7 +3301,7 @@
                 }, 'image/png');
             }).catch(err => {
                 if (lightMode) {
-                    gridGrid.classList.remove('snapshot-light');
+                    captureEl.classList.remove('snapshot-light');
                 }
                 console.error('Snapshot failed:', err);
             });
@@ -3497,23 +3949,8 @@
                 .filter(Boolean);
         }
         
-        function assignEncodings(dims) {
-            const encodings = {};
-            
-            dims.forEach((dim, idx) => {
-                if (idx === 0) encodings.gridX = dim;
-                else if (idx === 1) encodings.gridY = dim;
-                else if (idx === 2) encodings.color = dim;
-                else if (idx === 3) encodings.panelX = dim;
-                else if (idx === 4) encodings.panelY = dim;
-                else if (idx === 5) encodings.shape = dim;
-            });
-            
-            return encodings;
-        }
-        
         // ============================================================
-        // DIMENSION EDITING (same as before)
+        // DIMENSION EDITING
         // ============================================================
         function toggleDimension(name, enabled) {
             if (enabled) {
@@ -3527,29 +3964,39 @@
         function resetDimensionOrder() {
             userDimensionOrder = allDimensions.map(d => d.name);
             enabledDimensions = new Set(userDimensionOrder);
+            autoAssignEncodingsFromOrder();
             renderDimensionList();
             updateVisualization();
         }
         
         function updateVisualization() {
-            const activeDims = getActiveDimensions();
-            encodings = assignEncodings(activeDims);
+            encodings = buildEncodings();
             
             updateDimensionListEncodings();
             renderValueFilters(encodings);
             updateColorLegend(encodings);
             updateShapeLegend(encodings);
+            updateEncodingLegendBar(encodings);
             updateGridInfo(encodings);
             
-            if (currentData && activeDims.length > 0) {
+            const hasLayout = encodings.gridX || encodings.gridY || encodings.color
+                || encodings.panelX || encodings.panelY || encodings.shape;
+            const toolbar = document.getElementById('vizToolbar');
+            const hasColorOrShape = encodings.color || encodings.shape;
+            if (toolbar) toolbar.style.display = hasLayout ? 'flex' : 'none';
+            const toggleLabel = toolbar?.querySelector('.encoding-legend-toggle');
+            if (toggleLabel) toggleLabel.style.display = hasColorOrShape ? 'inline-flex' : 'none';
+            syncEncodingLegendToggle();
+
+            if (currentData && hasLayout) {
                 renderVisualization(currentData, encodings);
             } else {
                 document.getElementById('vizContainer').innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">📊</div>
-                        <div class="empty-state-text">No dimensions enabled</div>
+                        <div class="empty-state-text">No dimensions assigned</div>
                         <div class="empty-state-subtext">
-                            Enable at least one dimension in the sidebar.
+                            Assign at least one dimension to Grid X, Y, Color, Shape, etc.
                         </div>
                     </div>
                 `;
@@ -3600,6 +4047,7 @@
             userDimensionOrder.splice(fromIndex, 1);
             userDimensionOrder.splice(toIndex, 0, draggedDimensionItem);
             
+            autoAssignEncodingsFromOrder();
             renderDimensionList();
             updateVisualization();
         }
@@ -3866,31 +4314,56 @@
             const list = document.getElementById('dimensionList');
             list.innerHTML = '';
             
-            userDimensionOrder.forEach((name, idx) => {
+            userDimensionOrder.forEach((name) => {
                 const dim = allDimensions.find(d => d.name === name);
                 if (!dim) return;
                 
                 const isEnabled = enabledDimensions.has(name);
-                const activeIndex = getActiveDimensions().findIndex(d => d.name === name);
-                const encoding = activeIndex >= 0 ? ENCODING_LABELS[activeIndex] : null;
+                const currentEnc = dimensionEncodings[name] || '';
+                const encLabel = getEncodingLabel(currentEnc);
                 
                 const li = document.createElement('li');
                 li.className = `dimension-item ${isEnabled ? '' : 'disabled'}`;
                 li.draggable = true;
                 li.dataset.name = name;
                 
-                li.innerHTML = `
-                    <span class="drag-handle">⋮⋮</span>
-                    <input type="checkbox" class="dimension-toggle" 
-                           ${isEnabled ? 'checked' : ''} 
-                           onchange="toggleDimension('${name}', this.checked)">
-                    <div class="dimension-rank">${activeIndex >= 0 ? activeIndex + 1 : '-'}</div>
-                    <div class="dimension-info">
-                        <div class="dimension-name">${dim.name}</div>
-                        <div class="dimension-meta">${getDimensionValueCountLabel(dim)}</div>
-                    </div>
-                    ${encoding ? `<div class="dimension-encoding ${encoding.class}">${encoding.label}</div>` : ''}
+                const handle = document.createElement('span');
+                handle.className = 'drag-handle';
+                handle.textContent = '⋮⋮';
+                
+                const toggle = document.createElement('input');
+                toggle.type = 'checkbox';
+                toggle.className = 'dimension-toggle';
+                toggle.checked = isEnabled;
+                toggle.addEventListener('change', () => toggleDimension(name, toggle.checked));
+                
+                const info = document.createElement('div');
+                info.className = 'dimension-info';
+                info.innerHTML = `
+                    <div class="dimension-name">${dim.name}</div>
+                    <div class="dimension-meta">${getDimensionValueCountLabel(dim)}</div>
                 `;
+                
+                const select = document.createElement('select');
+                select.className = 'dimension-encoding-select' + (encLabel ? ` ${encLabel.class}` : '');
+                select.title = 'Visual role for this dimension';
+                select.disabled = !isEnabled;
+                const noneOpt = document.createElement('option');
+                noneOpt.value = '';
+                noneOpt.textContent = '—';
+                select.appendChild(noneOpt);
+                ENCODING_LABELS.forEach(enc => {
+                    const opt = document.createElement('option');
+                    opt.value = enc.key;
+                    opt.textContent = enc.label;
+                    if (currentEnc === enc.key) opt.selected = true;
+                    select.appendChild(opt);
+                });
+                select.addEventListener('change', () => {
+                    setDimensionEncoding(name, select.value);
+                });
+                
+                li.append(handle, toggle, info, select);
                 
                 li.addEventListener('dragstart', (e) => handleDimDragStart(e, name));
                 li.addEventListener('dragend', handleDimDragEnd);
@@ -3954,29 +4427,21 @@
         }
         
         function updateDimensionListEncodings() {
-            const activeDims = getActiveDimensions();
-            
             document.querySelectorAll('.dimension-item').forEach(item => {
                 const name = item.dataset.name;
                 const dim = allDimensions.find(d => d.name === name);
-                const activeIndex = activeDims.findIndex(d => d.name === name);
                 const isEnabled = enabledDimensions.has(name);
-                
-                const rankEl = item.querySelector('.dimension-rank');
-                rankEl.textContent = activeIndex >= 0 ? activeIndex + 1 : '-';
+                const currentEnc = dimensionEncodings[name] || '';
+                const encLabel = getEncodingLabel(currentEnc);
                 
                 const metaEl = item.querySelector('.dimension-meta');
                 if (metaEl && dim) metaEl.textContent = getDimensionValueCountLabel(dim);
                 
-                const existingEncoding = item.querySelector('.dimension-encoding');
-                if (existingEncoding) existingEncoding.remove();
-                
-                if (activeIndex >= 0 && ENCODING_LABELS[activeIndex]) {
-                    const encoding = ENCODING_LABELS[activeIndex];
-                    const encodingEl = document.createElement('div');
-                    encodingEl.className = `dimension-encoding ${encoding.class}`;
-                    encodingEl.textContent = encoding.label;
-                    item.appendChild(encodingEl);
+                const select = item.querySelector('.dimension-encoding-select');
+                if (select) {
+                    select.disabled = !isEnabled;
+                    select.value = currentEnc;
+                    select.className = 'dimension-encoding-select' + (encLabel ? ` ${encLabel.class}` : '');
                 }
                 
                 item.classList.toggle('disabled', !isEnabled);
@@ -4184,12 +4649,87 @@
             popup.classList.add('visible');
         }
         
+        function updateEncodingLegendBar(encodings) {
+            const bar = document.getElementById('encodingLegendBar');
+            const colorEl = document.getElementById('encodingColorLegend');
+            const shapeEl = document.getElementById('encodingShapeLegend');
+            if (!bar || !colorEl || !shapeEl) return;
+
+            if (!showEncodingLegend) {
+                bar.style.display = 'none';
+                return;
+            }
+
+            const hasColorOrShape = encodings && (encodings.color || encodings.shape);
+            if (!hasColorOrShape) {
+                bar.style.display = 'none';
+                return;
+            }
+
+            bar.style.display = 'flex';
+
+            colorEl.innerHTML = '';
+            if (encodings.color) {
+                const colorKey = dimKey(encodings.color);
+                const title = document.createElement('span');
+                title.className = 'encoding-swatch-title';
+                title.textContent = `${encodings.color.name}:`;
+                colorEl.appendChild(title);
+
+                encodings.color.uniqueValues.forEach(value => {
+                    const color = getColorForValue(encodings, value);
+                    const visible = !dimensionValueFilters[colorKey] || dimensionValueFilters[colorKey].has(value);
+                    const chip = document.createElement('button');
+                    chip.type = 'button';
+                    chip.className = 'encoding-swatch-chip' + (visible ? '' : ' filtered-out');
+                    chip.title = visible ? `Hide “${value}”` : `Show “${value}”`;
+                    chip.innerHTML = `<span class="legend-swatch" style="background:${color}"></span><span>${value}</span>`;
+                    chip.addEventListener('click', () => setValueFilter(colorKey, value, !visible));
+                    colorEl.appendChild(chip);
+                });
+            }
+            colorEl.style.display = encodings.color ? 'flex' : 'none';
+
+            shapeEl.innerHTML = '';
+            if (encodings.shape) {
+                const shapeKey = dimKey(encodings.shape);
+                const title = document.createElement('span');
+                title.className = 'encoding-swatch-title';
+                title.textContent = `${encodings.shape.name}:`;
+                shapeEl.appendChild(title);
+
+                encodings.shape.uniqueValues.forEach(value => {
+                    const shape = getShapeForValue(encodings, value);
+                    const visible = !dimensionValueFilters[shapeKey] || dimensionValueFilters[shapeKey].has(value);
+                    const chip = document.createElement('button');
+                    chip.type = 'button';
+                    chip.className = 'encoding-swatch-chip' + (visible ? '' : ' filtered-out');
+                    chip.title = visible ? `Hide “${value}”` : `Show “${value}”`;
+                    chip.innerHTML = `
+                        <span class="legend-shape">
+                            <span class="data-point shape-${shape}" style="background:#888;width:10px;height:10px;"></span>
+                        </span>
+                        <span>${value}</span>
+                    `;
+                    chip.addEventListener('click', () => setValueFilter(shapeKey, value, !visible));
+                    shapeEl.appendChild(chip);
+                });
+            }
+            shapeEl.style.display = encodings.shape ? 'flex' : 'none';
+        }
+
         function updateFloatingLegend(encodings) {
             const content = document.getElementById('floatingLegendContent');
+            const legend = document.getElementById('floatingLegend');
+            if (showEncodingLegend) {
+                content.innerHTML = '';
+                if (legend) legend.classList.remove('has-legend');
+                return;
+            }
             let html = '';
             
             if (encodings && encodings.color) {
-                html += `<div style="margin-bottom: 8px;"><strong style="font-size: 0.65rem; color: #888;">${encodings.color.name}</strong></div>`;
+                html += `<div style="margin-bottom: 8px;"><strong style="font-size: 0.65rem; color: #888;">${getDisplayName(encodings.color.name)}</strong></div>`;
                 encodings.color.uniqueValues.forEach((value, idx) => {
                     const color = getColorForValue(encodings, value);
                     html += `
@@ -4202,7 +4742,7 @@
             }
             
             if (encodings && encodings.shape) {
-                html += `<div style="margin: 10px 0 8px 0;"><strong style="font-size: 0.65rem; color: #888;">${encodings.shape.name}</strong></div>`;
+                html += `<div style="margin: 10px 0 8px 0;"><strong style="font-size: 0.65rem; color: #888;">${getDisplayName(encodings.shape.name)}</strong></div>`;
                 encodings.shape.uniqueValues.forEach((value, idx) => {
                     const shape = getShapeForValue(encodings, value);
                     html += `
@@ -4217,6 +4757,9 @@
             }
             
             content.innerHTML = html;
+            if (legend) {
+                legend.classList.toggle('has-legend', !!html);
+            }
         }
         
         // ============================================================
@@ -4287,7 +4830,39 @@
             }
             applyLabelStyle();
             container.innerHTML = '';
-            container.appendChild(outerGrid);
+
+            const wrap = document.createElement('div');
+            wrap.className = 'grid-viz-wrap';
+
+            if (encodings.gridX) {
+                const xTitle = document.createElement('div');
+                xTitle.className = 'encoding-axis-title encoding-axis-title-x';
+                xTitle.textContent = getDisplayName(encodings.gridX.name);
+                wrap.appendChild(xTitle);
+            }
+
+            const body = document.createElement('div');
+            body.className = 'grid-viz-body';
+
+            if (encodings.gridY) {
+                const yTitle = document.createElement('div');
+                yTitle.className = 'encoding-axis-title encoding-axis-title-y';
+                setVerticalAxisLabel(yTitle, getDisplayName(encodings.gridY.name));
+                body.appendChild(yTitle);
+            }
+
+            body.appendChild(outerGrid);
+            wrap.appendChild(body);
+
+            if (encodings.color) {
+                const colorTitle = document.createElement('div');
+                colorTitle.className = 'encoding-axis-title encoding-axis-title-color';
+                colorTitle.textContent = `Color: ${getDisplayName(encodings.color.name)}`;
+                wrap.appendChild(colorTitle);
+            }
+
+            container.appendChild(wrap);
+            container.classList.toggle('show-dimension-names', showDimensionNames);
         }
         
         function getOuterPanelRowHeight() {
@@ -4321,6 +4896,14 @@
             document.querySelectorAll('.grid-title').forEach(el => {
                 el.style.display = showItemCounts ? '' : 'none'; 
             });
+        }
+
+        function toggleDimensionNames() {
+            showDimensionNames = !!document.getElementById('showDimensionNames')?.checked;
+            const container = document.getElementById('vizContainer');
+            if (container) {
+                container.classList.toggle('show-dimension-names', showDimensionNames);
+            }
         }
         
         function toggleLabelStylegrid(ev) {
@@ -4427,10 +5010,10 @@
                 axisLabels.className = 'grid-axis-labels';
                 
                 if (encodings.panelY) {
-                    axisLabels.innerHTML += `<span class="grid-axis-label">Y: ${encodings.panelY.name}</span>`;
+                    axisLabels.innerHTML += `<span class="grid-axis-label">Y: ${getDisplayName(encodings.panelY.name)}</span>`;
                 }
                 if (encodings.panelX) {
-                    axisLabels.innerHTML += `<span class="grid-axis-label">X: ${encodings.panelX.name}</span>`;
+                    axisLabels.innerHTML += `<span class="grid-axis-label">X: ${getDisplayName(encodings.panelX.name)}</span>`;
                 }
                 
                 grid.appendChild(axisLabels);
@@ -5063,9 +5646,11 @@
             customColorMap = {};
             customShapeMap = {};
             dimensionValueFilters = {};
+            toggleEncodingLegend(false);
             
             userDimensionOrder = allDimensions.map(d => d.name);
             enabledDimensions = new Set(userDimensionOrder);
+            autoAssignEncodingsFromOrder();
             
             document.getElementById('vizConfigSection').style.display = 'block';
             renderDimensionList();
@@ -5075,13 +5660,11 @@
             updateUndoRedoUI();
             updateVisualization();
 
-            discoverVizConfigsForDataset().then(() => {
-                const configs = getImportableVizConfigs();
-                if (configs.length === 1) {
-                    showVizConfigNotice(`Saved setup found: ${configs[0].label}. Click Import setup to apply.`);
-                } else if (configs.length > 1) {
-                    showVizConfigNotice(`${configs.length} saved setups found. Click Import setup to choose.`);
-                }
+            Promise.all([
+                discoverVizConfigsForDataset(),
+                loadPageVizPresets()
+            ]).then(() => {
+                finalizeVizPresetLoad();
             });
         }
         

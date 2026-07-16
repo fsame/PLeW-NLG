@@ -5,4 +5,17 @@ task = "data-to-text"
 description = "Per-rater human scores (fluency, grammaticality, semantic adequacy) for WebNLG 2017 systems. 768 rows: 18 meaning representations × 5 systems × 3 criteria × multiple raters."
 dataset_url = "data/webnlg2017_humaneval.csv"
 layout = "example-viz"
+
+[[viz_presets]]
+label = "Curated subset"
+url = "data/plew-setup-webnlg2017-humaneval-curated.json"
+default = true
+
+[[viz_presets]]
+label = "System × criterion"
+url = "data/plew-setup-webnlg2017-humaneval-by-system.json"
+
+[[viz_presets]]
+label = "By category"
+url = "data/plew-setup-webnlg2017-humaneval-by-category.json"
 +++

@@ -1,0 +1,100 @@
+{
+  "version": 2,
+  "kind": "plew-visualization-config",
+  "exportedAt": "2026-07-11T12:59:19.913Z",
+  "dataset": {
+    "id": "webnlg2017_humaneval.csv",
+    "label": "webnlg2017_humaneval.csv"
+  },
+  "dimensions": {
+    "order": [
+      "criterion",
+      "mr_id",
+      "category",
+      "system",
+      "triplesize",
+      "annotator_index",
+      "score",
+      "type",
+      "systemtype"
+    ],
+    "enabled": [
+      "mr_id",
+      "system",
+      "annotator_index",
+      "score",
+      "type",
+      "systemtype",
+      "criterion"
+    ]
+  },
+  "valueFilters": {
+    "dim::mr_id": [
+      "mr-00d11a52",
+      "mr-02ffe832",
+      "mr-03afa2fc",
+      "mr-1509e769",
+      "mr-2b6b8530",
+      "mr-3f3328a9",
+      "mr-d3acba36"
+    ],
+    "dim::category": [
+      "Airport",
+      "Astronaut",
+      "Building",
+      "CelestialBody",
+      "ComicsCharacter",
+      "MeanOfTransportation",
+      "Monument",
+      "Politician",
+      "SportsTeam",
+      "University"
+    ],
+    "dim::triplesize": [
+      "1triple",
+      "2triple",
+      "3triple",
+      "4triple",
+      "5triple"
+    ],
+    "dim::annotator_index": [
+      "1",
+      "2",
+      "3"
+    ],
+    "dim::system": [
+      "adapt",
+      "baseline",
+      "pkuwriter",
+      "tilburg-nmt",
+      "webnlg"
+    ],
+    "dim::criterion": [
+      "fluency",
+      "grammaticality",
+      "semantic_adequacy"
+    ]
+  },
+  "styling": {
+    "customColors": {},
+    "customShapes": {}
+  },
+  "display": {
+    "showItemCounts": false,
+    "showDimensionNames": false,
+    "uniformGridSizes": false,
+    "outerPanelRowHeight": "200",
+    "unifyInnerPanel": false,
+    "innerPanelRowHeight": "56",
+    "labelSize": "0.7",
+    "labelColor": "#888888",
+    "countSize": "0.6",
+    "countColor": "#555555"
+  },
+  "dummySettings": {
+    "visible": false,
+    "color": "#555555",
+    "opacity": 0,
+    "shape": "diamond"
+  }
+}
