@@ -9,13 +9,4 @@ layout = "example-viz"
 [[viz_presets]]
 label = "Curated subset"
 url = "data/plew-setup-webnlg2017-humaneval-curated.json"
-default = true
-
-[[viz_presets]]
-label = "System × criterion"
-url = "data/plew-setup-webnlg2017-humaneval-by-system.json"
-
-[[viz_presets]]
-label = "By category"
-url = "data/plew-setup-webnlg2017-humaneval-by-category.json"
 +++

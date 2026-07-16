@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "kind": "plew-visualization-config",
+  "exportedAt": "2026-07-16T00:00:00.000Z",
+  "dataset": { "id": "simpeval.csv", "label": "simpeval.csv" },
+  "dimensions": {
+    "order": ["score_band", "annotator_index", "system", "sentence_id"],
+    "enabled": ["score_band", "annotator_index", "system"],
+    "encodings": { "score_band": "grid-x", "annotator_index": "grid-y", "system": "color" }
+  },
+  "valueFilters": {},
+  "styling": { "customColors": {}, "customShapes": {} },
+  "display": { "showItemCounts": true, "showDimensionNames": true, "clusterPoints": true, "uniformGridSizes": false, "outerPanelRowHeight": "200", "unifyInnerPanel": false, "innerPanelRowHeight": "56", "labelSize": "0.7", "labelColor": "#888888", "countSize": "0.6", "countColor": "#555555" },
+  "dummySettings": {}
+}

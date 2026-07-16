@@ -1,12 +1,12 @@
 {
   "version": 2,
   "kind": "plew-visualization-config",
-  "exportedAt": "2026-07-15T00:00:00.000Z",
-  "dataset": { "id": "book_highlights_llm_as_a_judge.csv", "label": "book_highlights_llm_as_a_judge.csv" },
+  "exportedAt": "2026-07-16T00:00:00.000Z",
+  "dataset": { "id": "neuralreg_humaneval.csv", "label": "neuralreg_humaneval.csv" },
   "dimensions": {
-    "order": ["book", "criterion", "winner_resolved", "comparison_axis", "theme", "confidence"],
-    "enabled": ["book", "criterion", "winner_resolved"],
-    "encodings": { "book": "panel-x", "criterion": "grid-x", "winner_resolved": "color" }
+    "order": ["system", "score", "criterion", "text_size", "text_id", "difficulty", "annotator_index", "english_proficiency", "list_id"],
+    "enabled": ["system", "score"],
+    "encodings": { "system": "grid-x", "score": "grid-y" }
   },
   "valueFilters": {},
   "styling": { "customColors": {}, "customShapes": {} },

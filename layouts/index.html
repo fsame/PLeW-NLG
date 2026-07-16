@@ -691,6 +691,14 @@
             cursor: pointer;
             background: transparent;
         }
+        .display-options-dropdown {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 200px;
+        }
+        .display-options-dropdown.open { display: flex; }
+        .display-options-dropdown .viz-checkbox { white-space: nowrap; }
         
         /* grid Grid - uses CSS vars for label styling */
         .grid-grid-container {
@@ -1391,6 +1399,18 @@
             text-align: left;
         }
 
+        .sr-only-input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
         .viz-toolbar {
             display: none;
             align-items: center;
@@ -1677,6 +1697,50 @@
 
         .snapshot-light .data-point.dummy-point {
             border-color: rgba(0, 0, 0, 0.3);
+        }
+
+        .snapshot-capture-wrap {
+            display: inline-block;
+            background: #0f1419;
+        }
+
+        .snapshot-capture-wrap.snapshot-light {
+            background: #ffffff;
+        }
+
+        .snapshot-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 12px 16px;
+            background: #151a20;
+            border-bottom: 1px solid #2d3640;
+        }
+
+        .snapshot-light .snapshot-legend {
+            background: #f5f5f5;
+            border-bottom-color: #ddd;
+        }
+
+        .snapshot-legend .encoding-swatch-title {
+            color: #8899a6;
+        }
+
+        .snapshot-light .snapshot-legend .encoding-swatch-title {
+            color: #555;
+        }
+
+        .snapshot-legend .snapshot-legend-chip {
+            cursor: default;
+            border: 1px solid #2d3640;
+            background: #1a1f26;
+            color: #e8e8e8;
+        }
+
+        .snapshot-light .snapshot-legend .snapshot-legend-chip {
+            border-color: #ccc;
+            background: #fff;
+            color: #222;
         }
         
         /* Change Log Section */
@@ -2058,12 +2122,7 @@
                     <div class="changes-actions" style="margin-top: 8px;">
                         <button class="btn btn-secondary btn-small" onclick="downloadVisualizationConfig()">📤 Export setup</button>
                         <button class="btn btn-secondary btn-small" onclick="openVizConfigImport()">📥 Import setup</button>
-                        <input type="file" id="vizConfigImportInput" accept=".json,application/json" hidden onchange="importVisualizationConfigFromFile(event)">
-                    </div>
-                    <div id="vizConfigImportMenu" class="viz-config-import-menu" style="display: none;">
-                        <div class="viz-config-import-title">Setups found alongside this dataset</div>
-                        <div id="vizConfigImportChoices" class="viz-config-import-choices"></div>
-                        <button class="btn btn-secondary btn-small" onclick="chooseVizConfigFile()">Choose another file…</button>
+                        <input type="file" id="vizConfigImportInput" class="sr-only-input" accept=".json,application/json" onchange="importVisualizationConfigFromFile(event)">
                     </div>
                 </div>
                 
@@ -2170,7 +2229,7 @@
                     <div class="viz-stats" id="vizStats"></div>
                 </div>
                 <div class="viz-actions">
-                    <div class="label-style-wrap">
+                    <div class="label-style-wrap" id="labelStyleWrap">
                         <button class="label-style-btn" id="labelStyleBtn" onclick="toggleLabelStylegrid(event)" title="Adjust size and color of outer and inner panel labels">Label styling ▾</button>
                         <div class="label-style-dropdown" id="labelStyleDropdown">
                             <div class="control-row">
@@ -2191,18 +2250,23 @@
                             </div>
                         </div>
                     </div>
-                    <label class="viz-checkbox"><input type="checkbox" id="uniformgrids" onchange="applyUniformGrids()"> Unify grid sizes</label>
-                    <label class="viz-checkbox viz-number-wrap">
-                        <span>Height (px)</span>
-                        <input type="number" id="outerPanelRowHeight" min="80" max="800" step="1" value="200" disabled oninput="applyUniformGrids()">
-                    </label>
-                    <label class="viz-checkbox"><input type="checkbox" id="unifyInnerPanel" onchange="applyUnifiedInnerPanels()"> Unify inner panel</label>
-                    <label class="viz-checkbox viz-number-wrap">
-                        <span>Height (px)</span>
-                        <input type="number" id="innerPanelRowHeight" min="24" max="400" step="1" value="56" disabled oninput="applyUnifiedInnerPanels()">
-                    </label>
-                    <label class="viz-checkbox"><input type="checkbox" id="showItemCounts" onchange="toggleItemCounts()"> Show item counts</label>
-                    <label class="viz-checkbox"><input type="checkbox" id="showDimensionNames" onchange="toggleDimensionNames()"> Show dimension names</label>
+                    <div class="label-style-wrap" id="displayOptionsWrap">
+                        <button class="label-style-btn" id="displayOptionsBtn" onclick="toggleDisplayOptions(event)" title="Grid sizing and label display options">Display options ▾</button>
+                        <div class="label-style-dropdown display-options-dropdown" id="displayOptionsDropdown">
+                            <label class="viz-checkbox"><input type="checkbox" id="uniformgrids" onchange="applyUniformGrids()"> Unify grid sizes</label>
+                            <label class="viz-checkbox viz-number-wrap">
+                                <span>Height (px)</span>
+                                <input type="number" id="outerPanelRowHeight" min="80" max="800" step="1" value="200" disabled oninput="applyUniformGrids()">
+                            </label>
+                            <label class="viz-checkbox"><input type="checkbox" id="unifyInnerPanel" onchange="applyUnifiedInnerPanels()"> Unify inner panel</label>
+                            <label class="viz-checkbox viz-number-wrap">
+                                <span>Height (px)</span>
+                                <input type="number" id="innerPanelRowHeight" min="24" max="400" step="1" value="56" disabled oninput="applyUnifiedInnerPanels()">
+                            </label>
+                            <label class="viz-checkbox"><input type="checkbox" id="showItemCounts" onchange="toggleItemCounts()"> Show item counts</label>
+                            <label class="viz-checkbox"><input type="checkbox" id="showDimensionNames" onchange="toggleDimensionNames()"> Show dimension names</label>
+                        </div>
+                    </div>
                     <button class="btn btn-success btn-small" onclick="downloadCSV()">📥 Download CSV</button>
                     <button class="btn btn-secondary btn-small" onclick="downloadSnapshot(false)">📷 Dark</button>
                     <button class="btn btn-secondary btn-small" onclick="downloadSnapshot(true)">📷 Light</button>
@@ -2214,6 +2278,10 @@
                 <label class="encoding-legend-toggle" title="Show color and shape keys above the grid">
                     <input type="checkbox" id="showEncodingLegendToggle" onchange="toggleEncodingLegend(this.checked)">
                     Show color & shape
+                </label>
+                <label class="encoding-legend-toggle" title="Group points by color/shape within each panel">
+                    <input type="checkbox" id="clusterPoints" onchange="toggleClusterPoints()">
+                    Cluster by color
                 </label>
             </div>
 
@@ -2511,6 +2579,7 @@
                 display: {
                     showItemCounts: !!document.getElementById('showItemCounts')?.checked,
                     showDimensionNames: !!document.getElementById('showDimensionNames')?.checked,
+                    clusterPoints: !!document.getElementById('clusterPoints')?.checked,
                     uniformGridSizes: !!document.getElementById('uniformgrids')?.checked,
                     outerPanelRowHeight: document.getElementById('outerPanelRowHeight')?.value ?? '200',
                     unifyInnerPanel: !!document.getElementById('unifyInnerPanel')?.checked,
@@ -2592,6 +2661,8 @@
             showItemCounts = !!display.showItemCounts;
             setChecked('showDimensionNames', display.showDimensionNames);
             showDimensionNames = !!display.showDimensionNames;
+            setChecked('clusterPoints', display.clusterPoints);
+            clusterPoints = !!display.clusterPoints;
             setChecked('uniformgrids', display.uniformGridSizes);
             uniformgridSizes = !!display.uniformGridSizes;
             setValue('outerPanelRowHeight', display.outerPanelRowHeight);
@@ -2647,7 +2718,6 @@
             reader.onload = (e) => {
                 try {
                     applyVisualizationConfig(JSON.parse(e.target.result), { silent: false });
-                    hideVizConfigImportMenu();
                 } catch (err) {
                     alert('Could not read setup file: ' + err.message);
                 }
@@ -2655,136 +2725,8 @@
             reader.readAsText(file);
         }
 
-        let discoveredVizConfigs = [];
-
-        function datasetBaseName(datasetId) {
-            return (datasetId || 'dataset').replace(/\.[^.]+$/, '');
-        }
-
-        function plewSetupCandidateNames(datasetId) {
-            const base = datasetBaseName(datasetId);
-            return [
-                `plew-setup-${base}.json`,
-                `${base}.plew-setup.json`
-            ];
-        }
-
-        function isVisualizationConfigPayload(obj) {
-            return obj && obj.kind === VIZ_CONFIG_KIND;
-        }
-
-        function addDiscoveredVizConfig(label, config) {
-            if (!isVisualizationConfigPayload(config)) return;
-            if (discoveredVizConfigs.some(item => item.label === label)) return;
-            discoveredVizConfigs.push({ label, config });
-        }
-
-        async function tryFetchVizConfig(url) {
-            try {
-                const response = await fetch(url);
-                if (!response.ok) return null;
-                const config = await response.json();
-                return isVisualizationConfigPayload(config) ? config : null;
-            } catch (_) {
-                return null;
-            }
-        }
-
-        function getDatasetDirectoryUrl() {
-            if (!csvBaseUrl) return '';
-            try {
-                return new URL('.', csvBaseUrl).href;
-            } catch (_) {
-                return csvBaseUrl.endsWith('/') ? csvBaseUrl : csvBaseUrl.replace(/[^/]+$/, '');
-            }
-        }
-
-        async function discoverVizConfigsFromBaseUrl(baseUrl, datasetId) {
-            if (!baseUrl || !datasetId) return [];
-            const found = [];
-            const seen = new Set();
-            for (const name of plewSetupCandidateNames(datasetId)) {
-                let url;
-                try {
-                    url = new URL(name, baseUrl).href;
-                } catch (_) {
-                    continue;
-                }
-                if (seen.has(url)) continue;
-                seen.add(url);
-                const config = await tryFetchVizConfig(url);
-                if (config) found.push({ label: name, config });
-            }
-            return found;
-        }
-
-        async function discoverVizConfigsForDataset() {
-            const configs = await discoverVizConfigsFromBaseUrl(getDatasetDirectoryUrl(), currentDatasetId);
-            configs.forEach(item => addDiscoveredVizConfig(item.label, item.config));
-        }
-
-        async function registerVizConfigFile(file, label) {
-            try {
-                const config = JSON.parse(await file.text());
-                addDiscoveredVizConfig(label || file.name, config);
-            } catch (_) {}
-        }
-
-        function getImportableVizConfigs() {
-            if (!discoveredVizConfigs.length) return [];
-            const base = datasetBaseName(currentDatasetId);
-            const matched = discoveredVizConfigs.filter(item => {
-                const savedId = item.config.dataset?.id;
-                if (savedId && savedId === currentDatasetId) return true;
-                return item.label.includes(base);
-            });
-            return matched.length ? matched : discoveredVizConfigs;
-        }
-
-        function renderVizConfigImportMenu() {
-            const menu = document.getElementById('vizConfigImportMenu');
-            const choices = document.getElementById('vizConfigImportChoices');
-            if (!menu || !choices) return;
-
-            const configs = getImportableVizConfigs();
-            choices.innerHTML = '';
-            configs.forEach(item => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'btn btn-secondary btn-small viz-config-choice-btn';
-                const exportedAt = item.config.exportedAt
-                    ? ` (${new Date(item.config.exportedAt).toLocaleString()})`
-                    : '';
-                btn.textContent = `${item.label}${exportedAt}`;
-                btn.onclick = () => {
-                    applyVisualizationConfig(item.config, { silent: false });
-                    hideVizConfigImportMenu();
-                };
-                choices.appendChild(btn);
-            });
-            menu.style.display = configs.length ? 'block' : 'none';
-        }
-
-        function hideVizConfigImportMenu() {
-            const menu = document.getElementById('vizConfigImportMenu');
-            if (menu) menu.style.display = 'none';
-        }
-
         function openVizConfigImport() {
-            const configs = getImportableVizConfigs();
-            if (!configs.length) {
-                document.getElementById('vizConfigImportInput').click();
-                return;
-            }
-            renderVizConfigImportMenu();
-            const menu = document.getElementById('vizConfigImportMenu');
-            if (!menu) return;
-            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-        }
-
-        function chooseVizConfigFile() {
-            hideVizConfigImportMenu();
-            document.getElementById('vizConfigImportInput').click();
+            document.getElementById('vizConfigImportInput')?.click();
         }
         
         function showVizConfigNotice(message) {
@@ -2875,6 +2817,7 @@
 
         let showItemCounts = false;
         let showDimensionNames = false;
+        let clusterPoints = false;
         
         // Undo/Redo state
         let undoStack = [];
@@ -3127,6 +3070,72 @@
             });
         }
 
+        function snapshotHasLegendEncodings(activeEncodings) {
+            return !!(activeEncodings && (activeEncodings.color || activeEncodings.shape));
+        }
+
+        function buildSnapshotLegendElement(activeEncodings, lightMode) {
+            const legend = document.createElement('div');
+            legend.className = 'snapshot-legend' + (lightMode ? ' snapshot-light' : '');
+
+            const addRow = (dim, kind) => {
+                const row = document.createElement('div');
+                row.className = 'encoding-swatch-row';
+                const title = document.createElement('span');
+                title.className = 'encoding-swatch-title';
+                title.textContent = `${getDisplayName(dim.name)}:`;
+                row.appendChild(title);
+
+                getVisibleValues(dim).forEach(value => {
+                    const chip = document.createElement('span');
+                    chip.className = 'encoding-swatch-chip snapshot-legend-chip';
+                    if (kind === 'color') {
+                        const color = getColorForValue(activeEncodings, value);
+                        chip.innerHTML = `<span class="legend-swatch" style="background:${color}"></span><span>${value}</span>`;
+                    } else {
+                        const shape = getShapeForValue(activeEncodings, value);
+                        chip.innerHTML = `<span class="legend-shape"><span class="data-point shape-${shape}" style="background:#888;width:10px;height:10px;"></span></span><span>${value}</span>`;
+                    }
+                    row.appendChild(chip);
+                });
+                legend.appendChild(row);
+            };
+
+            if (activeEncodings.color) addRow(activeEncodings.color, 'color');
+            if (activeEncodings.shape) addRow(activeEncodings.shape, 'shape');
+            return legend;
+        }
+
+        function prepareSnapshotCaptureRoot(captureEl, activeEncodings, lightMode) {
+            if (!snapshotHasLegendEncodings(activeEncodings)) {
+                if (lightMode) captureEl.classList.add('snapshot-light');
+                return {
+                    root: captureEl,
+                    cleanup: () => {
+                        if (lightMode) captureEl.classList.remove('snapshot-light');
+                    }
+                };
+            }
+
+            const wrap = document.createElement('div');
+            wrap.className = 'snapshot-capture-wrap' + (lightMode ? ' snapshot-light' : '');
+            const parent = captureEl.parentNode;
+            const next = captureEl.nextSibling;
+            parent.insertBefore(wrap, captureEl);
+            wrap.appendChild(buildSnapshotLegendElement(activeEncodings, lightMode));
+            wrap.appendChild(captureEl);
+            if (lightMode) captureEl.classList.add('snapshot-light');
+
+            return {
+                root: wrap,
+                cleanup: () => {
+                    parent.insertBefore(captureEl, next);
+                    wrap.remove();
+                    if (lightMode) captureEl.classList.remove('snapshot-light');
+                }
+            };
+        }
+
         function downloadSnapshot(lightMode) {
             const el = document.getElementById('vizContainer');
             const captureEl = el.querySelector('.grid-viz-wrap') || el.querySelector('.grid-grid');
@@ -3139,23 +3148,21 @@
                 return;
             }
 
-            if (lightMode) {
-                captureEl.classList.add('snapshot-light');
-            }
-
+            const { root: snapshotRoot, cleanup } = prepareSnapshotCaptureRoot(captureEl, encodings, lightMode);
             const bgColor = lightMode ? '#ffffff' : '#0f1419';
 
-            html2canvas(captureEl, {
+            html2canvas(snapshotRoot, {
                 backgroundColor: bgColor,
                 scale: 2,
-                onclone: (clonedDoc, clonedGrid) => {
-                    if (lightMode) clonedGrid.classList.add('snapshot-light');
-                    fixSnapshotLabels(clonedDoc, clonedGrid);
+                onclone: (clonedDoc, clonedRoot) => {
+                    if (lightMode) clonedRoot.classList.add('snapshot-light');
+                    const gridPart = clonedRoot.querySelector('.grid-viz-wrap')
+                        || clonedRoot.querySelector('.grid-grid')
+                        || clonedRoot;
+                    fixSnapshotLabels(clonedDoc, gridPart);
                 }
             }).then(canvas => {
-                if (lightMode) {
-                    captureEl.classList.remove('snapshot-light');
-                }
+                cleanup();
                 canvas.toBlob(blob => {
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement('a');
@@ -3165,9 +3172,7 @@
                     URL.revokeObjectURL(url);
                 }, 'image/png');
             }).catch(err => {
-                if (lightMode) {
-                    captureEl.classList.remove('snapshot-light');
-                }
+                cleanup();
                 console.error('Snapshot failed:', err);
             });
         }
@@ -4198,8 +4203,11 @@
             if (!e.target.closest('.context-menu') && !e.target.closest('.data-point')) {
                 closeContextMenu();
             }
-            if (!e.target.closest('.label-style-wrap')) {
+            if (!e.target.closest('#labelStyleWrap')) {
                 document.getElementById('labelStyleDropdown')?.classList.remove('open');
+            }
+            if (!e.target.closest('#displayOptionsWrap')) {
+                document.getElementById('displayOptionsDropdown')?.classList.remove('open');
             }
             if (!e.target.closest('.shape-selector-popup') && !e.target.closest('.legend-shape-btn')) {
                 closeShapeSelectorPopup();
@@ -4804,10 +4812,21 @@
                 container.classList.toggle('show-dimension-names', showDimensionNames);
             }
         }
+
+        function toggleClusterPoints() {
+            clusterPoints = !!document.getElementById('clusterPoints')?.checked;
+            updateVisualization();
+        }
         
         function toggleLabelStylegrid(ev) {
             ev?.stopPropagation();
             const dropdown = document.getElementById('labelStyleDropdown');
+            dropdown.classList.toggle('open');
+        }
+
+        function toggleDisplayOptions(ev) {
+            ev?.stopPropagation();
+            const dropdown = document.getElementById('displayOptionsDropdown');
             dropdown.classList.toggle('open');
         }
         
@@ -4941,11 +4960,27 @@
             cell.addEventListener('dragleave', handleCellDragLeave);
             cell.addEventListener('drop', (e) => handleCellDrop(e, gridXVal, gridYVal, panelXVal, panelYVal));
             
-            cellData.forEach(row => {
+            let orderedData = cellData;
+            if (clusterPoints && (encodings.color || encodings.shape)) {
+                const colorIdx = v => encodings.color ? encodings.color.uniqueValues.indexOf(v) : 0;
+                const shapeIdx = v => encodings.shape ? encodings.shape.uniqueValues.indexOf(v) : 0;
+                orderedData = [...cellData].sort((a, b) => {
+                    if (!!a._isDummy !== !!b._isDummy) return a._isDummy ? 1 : -1;
+                    const colorDiff = encodings.color
+                        ? colorIdx(a[dimKey(encodings.color)]) - colorIdx(b[dimKey(encodings.color)])
+                        : 0;
+                    if (colorDiff) return colorDiff;
+                    return encodings.shape
+                        ? shapeIdx(a[dimKey(encodings.shape)]) - shapeIdx(b[dimKey(encodings.shape)])
+                        : 0;
+                });
+            }
+
+            orderedData.forEach(row => {
                 const point = createDataPoint(row, encodings);
                 cell.appendChild(point);
             });
-            
+
             return cell;
         }
         
@@ -5153,6 +5188,7 @@
             }
             
             modalBody.innerHTML = tableHTML;
+            preloadModalImages(modalBody);
             document.getElementById('modalOverlay').classList.add('active');
         }
         
@@ -5196,6 +5232,119 @@
                     return `<div class="no-media">Unknown media type: ${type}</div>`;
             }
         }
+
+        const snapshotImageCache = new Map();
+
+        function getSnapshotFetchUrl(src) {
+            if (!src || src.startsWith('data:') || src.startsWith('blob:')) return src;
+            try {
+                if (new URL(src, window.location.href).origin === window.location.origin) return src;
+            } catch (_) {}
+            // Cross-origin images (e.g. COCO) typically lack CORS headers, so a direct
+            // fetch is either blocked (cors) or returns an unreadable opaque blob (no-cors).
+            // Route through a CORS-enabled proxy for snapshot inlining only; panel display
+            // keeps the original URL.
+            return 'https://wsrv.nl/?url=' + encodeURIComponent(src);
+        }
+
+        async function imageSrcToDataUrl(src) {
+            if (!src || src.startsWith('data:')) return src;
+            if (snapshotImageCache.has(src)) return snapshotImageCache.get(src);
+
+            async function blobToDataUrl(blob) {
+                return await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            }
+
+            const fetchUrl = getSnapshotFetchUrl(src);
+            try {
+                const response = await fetch(fetchUrl, { mode: 'cors', credentials: 'omit' });
+                const blob = await response.blob();
+                if (blob.size > 0) {
+                    const dataUrl = await blobToDataUrl(blob);
+                    snapshotImageCache.set(src, dataUrl);
+                    return dataUrl;
+                }
+            } catch (_) { /* fall through */ }
+            return null;
+        }
+
+        function preloadModalImages(root) {
+            root.querySelectorAll('img[src]').forEach(img => {
+                const src = img.getAttribute('src');
+                if (src && !src.startsWith('data:')) imageSrcToDataUrl(src);
+            });
+        }
+
+        async function inlineImagesForSnapshot(root) {
+            const restores = [];
+            const imgs = root.querySelectorAll('img[src]');
+            await Promise.all([...imgs].map(async (img) => {
+                const original = img.getAttribute('src');
+                if (!original || original.startsWith('data:')) return;
+                const dataUrl = await imageSrcToDataUrl(original);
+                if (dataUrl && dataUrl.startsWith('data:')) {
+                    restores.push({ img, original });
+                    img.removeAttribute('crossorigin');
+                    img.src = dataUrl;
+                    if (img.decode) {
+                        try { await img.decode(); } catch (_) { /* ignore */ }
+                    } else {
+                        await new Promise((resolve) => {
+                            img.onload = resolve;
+                            img.onerror = resolve;
+                        });
+                    }
+                }
+            }));
+            return () => restores.forEach(({ img, original }) => {
+                img.src = original;
+            });
+        }
+
+        function syncInlineImagesToClone(liveRoot, cloneRoot) {
+            const liveImgs = liveRoot.querySelectorAll('img[src]');
+            const cloneImgs = cloneRoot.querySelectorAll('img[src]');
+            cloneImgs.forEach((cloneImg, i) => {
+                const liveImg = liveImgs[i];
+                if (!liveImg) return;
+                cloneImg.removeAttribute('crossorigin');
+                cloneImg.src = liveImg.currentSrc || liveImg.src;
+            });
+        }
+
+        function expandSnapshotClone(el) {
+            el.style.maxHeight = 'none';
+            el.style.overflowY = 'visible';
+        }
+
+        function makeSnapshotOnclone(liveModal, options = {}) {
+            return (_doc, cloneEl) => {
+                expandSnapshotClone(cloneEl);
+                if (options.hideMedia) {
+                    const ms = cloneEl.querySelector('.media-section');
+                    if (ms) ms.style.display = 'none';
+                }
+                if (options.hideTable) {
+                    const tbl = cloneEl.querySelector('table');
+                    if (tbl) tbl.style.display = 'none';
+                    cloneEl.querySelectorAll('.modal-snap-btn, .modal-close').forEach(b => {
+                        b.style.display = 'none';
+                    });
+                }
+                syncInlineImagesToClone(liveModal, cloneEl);
+            };
+        }
+
+        const HTML2CANVAS_SNAPSHOT_OPTS = {
+            useCORS: false,
+            allowTaint: false,
+            logging: false
+        };
         
         // ============================================================
         // REPORT
@@ -5382,7 +5531,7 @@
             URL.revokeObjectURL(a.href);
         }
         
-        function snapshotModal(mode) {
+        async function snapshotModal(mode) {
             const modal = document.querySelector('#modalOverlay .modal');
             if (!modal) return;
             if (typeof html2canvas === 'undefined') {
@@ -5392,6 +5541,7 @@
 
             const title = (document.getElementById('modalTitle')?.textContent || 'record').replace(/\s+/g, '_');
             const BG = '#1e1e2f';
+            const restoreImages = await inlineImagesForSnapshot(modal);
 
             function downloadCanvas(canvas, filename) {
                 canvas.toBlob(blob => {
@@ -5404,38 +5554,29 @@
                 }, 'image/png');
             }
 
-            function expandClone(el) {
-                el.style.maxHeight = 'none';
-                el.style.overflowY = 'visible';
-            }
+            try {
+                if (mode === 'full') {
+                    const canvas = await html2canvas(modal, {
+                        ...HTML2CANVAS_SNAPSHOT_OPTS,
+                        backgroundColor: BG,
+                        scale: 2,
+                        onclone: makeSnapshotOnclone(modal)
+                    });
+                    downloadCanvas(canvas, `${title}_stacked.png`);
+                } else {
+                    const fieldsCanvas = await html2canvas(modal, {
+                        ...HTML2CANVAS_SNAPSHOT_OPTS,
+                        backgroundColor: BG,
+                        scale: 2,
+                        onclone: makeSnapshotOnclone(modal, { hideMedia: true })
+                    });
+                    const mediaCanvas = await html2canvas(modal, {
+                        ...HTML2CANVAS_SNAPSHOT_OPTS,
+                        backgroundColor: BG,
+                        scale: 2,
+                        onclone: makeSnapshotOnclone(modal, { hideTable: true })
+                    });
 
-            if (mode === 'full') {
-                html2canvas(modal, {
-                    backgroundColor: BG,
-                    scale: 2,
-                    onclone: (_doc, el) => expandClone(el)
-                }).then(canvas => downloadCanvas(canvas, `${title}_stacked.png`));
-
-            } else {
-                const fieldsPromise = html2canvas(modal, {
-                    backgroundColor: BG, scale: 2,
-                    onclone: (_doc, el) => {
-                        expandClone(el);
-                        const ms = el.querySelector('.media-section');
-                        if (ms) ms.style.display = 'none';
-                    }
-                });
-                const mediaPromise = html2canvas(modal, {
-                    backgroundColor: BG, scale: 2,
-                    onclone: (_doc, el) => {
-                        expandClone(el);
-                        const tbl = el.querySelector('table');
-                        if (tbl) tbl.style.display = 'none';
-                        el.querySelectorAll('.modal-snap-btn, .modal-close').forEach(b => b.style.display = 'none');
-                    }
-                });
-
-                Promise.all([fieldsPromise, mediaPromise]).then(([fieldsCanvas, mediaCanvas]) => {
                     const pad = 40;
                     const targetH = Math.min(fieldsCanvas.height, mediaCanvas.height);
                     const scaleF = targetH / fieldsCanvas.height;
@@ -5455,7 +5596,11 @@
                     ctx.drawImage(mediaCanvas, 0, 0, mediaCanvas.width, mediaCanvas.height,
                         cellW + pad + (cellW - dw_m) / 2, 0, dw_m, targetH);
                     downloadCanvas(out, `${title}_side-by-side.png`);
-                });
+                }
+            } catch (err) {
+                console.error('Snapshot failed:', err);
+            } finally {
+                restoreImages();
             }
         }
 
@@ -5590,8 +5735,6 @@
                         localMediaMap[file.webkitRelativePath] = blobUrl;
                     }
                     count++;
-                } else if (file.name.toLowerCase().endsWith('.json')) {
-                    registerVizConfigFile(file, file.webkitRelativePath || file.name);
                 }
             }
             updateMediaFolderButton(count);
@@ -5617,26 +5760,6 @@
             }
             if (mediaCount > 0) updateMediaFolderButton(mediaCount);
             if (dataFile) loadFile(dataFile, '');
-            for (const file of fileList) {
-                if (file === dataFile) continue;
-                if (file.name.toLowerCase().endsWith('.json')) {
-                    await registerVizConfigFile(file);
-                }
-            }
-        }
-
-        async function scanDirForVizConfigs(dirHandle, prefix) {
-            for await (const [name, handle] of dirHandle.entries()) {
-                const relPath = prefix ? `${prefix}/${name}` : name;
-                if (handle.kind === 'file' && name.toLowerCase().endsWith('.json')) {
-                    try {
-                        const file = await handle.getFile();
-                        await registerVizConfigFile(file, relPath);
-                    } catch (_) {}
-                } else if (handle.kind === 'directory') {
-                    await scanDirForVizConfigs(handle, relPath);
-                }
-            }
         }
 
         async function loadMediaFolder(dirHandle) {
@@ -5646,7 +5769,6 @@
                 const btn = document.getElementById('mediaFolderBtn');
                 if (btn) btn.textContent = 'Scanning…';
                 await scanDirForMedia(dirHandle, '');
-                await scanDirForVizConfigs(dirHandle, '');
                 const count = Object.keys(localMediaMap).length / 2 | 0;
                 updateMediaFolderButton(count);
             } else {
@@ -5754,15 +5876,6 @@
             updateChangeLogUI();
             updateUndoRedoUI();
             updateVisualization();
-
-            discoverVizConfigsForDataset().then(() => {
-                const configs = getImportableVizConfigs();
-                if (configs.length === 1) {
-                    showVizConfigNotice(`Saved setup found: ${configs[0].label}. Click Import setup to apply.`);
-                } else if (configs.length > 1) {
-                    showVizConfigNotice(`${configs.length} saved setups found. Click Import setup to choose.`);
-                }
-            });
 
             // Show "Load media folder" button when the CSV has media columns and
             // was loaded from local disk (no server URL means no auto-resolution).

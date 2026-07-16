@@ -9,7 +9,6 @@ layout = "example-viz"
 [[viz_presets]]
 label = "Expert disagreement"
 url = "data/plew-setup-flickr8k-expert-scores.json"
-default = true
 
 [[viz_presets]]
 label = "By image"

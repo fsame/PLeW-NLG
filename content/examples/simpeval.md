@@ -7,11 +7,10 @@ dataset_url = "data/simpeval.csv"
 layout = "example-viz"
 
 [[viz_presets]]
-label = "System × score band"
-url = "data/plew-setup-simpeval-by-system.json"
-default = true
+label = "Annotator × score band"
+url = "data/plew-setup-simpeval-annotators-only.json"
 
 [[viz_presets]]
-label = "By sentence"
-url = "data/plew-setup-simpeval-by-sentence.json"
+label = "Annotator × score band by system"
+url = "data/plew-setup-simpeval-annotators-system.json"
 +++

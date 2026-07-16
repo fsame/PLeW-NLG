@@ -1,12 +1,12 @@
 {
   "version": 2,
   "kind": "plew-visualization-config",
-  "exportedAt": "2026-07-15T00:00:00.000Z",
-  "dataset": { "id": "seahorse.csv", "label": "seahorse.csv" },
+  "exportedAt": "2026-07-16T00:00:00.000Z",
+  "dataset": { "id": "frank_summary.csv", "label": "frank_summary.csv" },
   "dimensions": {
-    "order": ["criterion", "worker_lang", "model", "rating", "dataset", "article_id"],
-    "enabled": ["criterion", "worker_lang", "model", "rating"],
-    "encodings": { "criterion": "grid-x", "worker_lang": "grid-y", "model": "color", "rating": "shape" }
+    "order": ["model", "factuality_band", "dataset", "split", "article_id", "Semantic_Frame_Errors_clear", "EntE_clear", "OutE_clear"],
+    "enabled": ["model", "factuality_band", "dataset"],
+    "encodings": { "model": "grid-x", "factuality_band": "grid-y", "dataset": "color" }
   },
   "valueFilters": {},
   "styling": { "customColors": {}, "customShapes": {} },

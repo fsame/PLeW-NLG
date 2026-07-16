@@ -1,12 +1,12 @@
 {
   "version": 2,
   "kind": "plew-visualization-config",
-  "exportedAt": "2026-07-15T00:00:00.000Z",
-  "dataset": { "id": "webnlg2017_humaneval.csv", "label": "webnlg2017_humaneval.csv" },
+  "exportedAt": "2026-07-16T00:00:00.000Z",
+  "dataset": { "id": "neuralreg_humaneval.csv", "label": "neuralreg_humaneval.csv" },
   "dimensions": {
-    "order": ["category", "system", "criterion", "score", "type", "triplesize", "annotator_index", "mr_id"],
-    "enabled": ["category", "system", "criterion", "score"],
-    "encodings": { "category": "panel-x", "system": "grid-x", "criterion": "grid-y", "score": "color" }
+    "order": ["system", "text_size", "score", "criterion", "text_id", "difficulty", "annotator_index", "english_proficiency", "list_id"],
+    "enabled": ["system", "text_size", "score"],
+    "encodings": { "system": "grid-x", "text_size": "grid-y", "score": "color" }
   },
   "valueFilters": {},
   "styling": { "customColors": {}, "customShapes": {} },
