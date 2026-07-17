@@ -2,7 +2,7 @@
 
 Interactive exploration of **human evaluation data** across NLG tasks. Load a PLeW-ready CSV (`dim::`, `desc::`, `med::`, `res::` columns), map dimensions to grid axes, color, and shape, then inspect or edit individual judgments in a record window.
 
-Built on PLeW, a browser-based multi-dimensional data visualizer.
+Built on PLeW (currently under review), a browser-based multi-dimensional data visualizer.
 
 ## Quick start
 
@@ -86,7 +86,5 @@ The `examples/` gallery ships with the following public human-evaluation dataset
 | Flickr8k | Image captioning | Hodosh, Young, and Hockenmaier, "Framing Image Description as a Ranking Task." JAIR 2013. |
 | THumB 1.0 | Image captioning | Kasai et al., "Transparent Human Evaluation for Image Captioning." NAACL 2022. |
 | Book highlights (preference judgment, faithfulness) | LLM-as-judge | Same et al., RetroEval 2026. [Paper](https://aclanthology.org/2026.retroeval-main.6/), [GitHub](https://github.com/fsame/book_summarization_e2e_pipeline) |
-
-<!-- Full source notes, licenses, and download links are in `eval-data-raw/SOURCES.md`. -->
 
 <!-- ## Citation -->
