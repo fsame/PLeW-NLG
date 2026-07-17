@@ -6,15 +6,20 @@ Built on PLeW, a browser-based multi-dimensional data visualizer.
 
 ## Quick start
 
-1. Install Hugo Extended.
+1. Clone the repository and change into the project directory:
+   ```
+   git clone <repo-url>
+   cd PLeW-NLG
+   ```
+2. Install Hugo Extended.
    - macOS: `brew install hugo`
    - Windows: `winget install Hugo.Hugo.Extended`
    - Other platforms: [Hugo releases](https://github.com/gohugoio/hugo/releases)
-2. Run the dev server from the project root:
+3. Run the dev server from the project root:
    ```
    hugo server
    ```
-3. Open http://localhost:1313/ in your browser.
+4. Open http://localhost:1313/ in your browser.
 
 Two entry points once the server is running:
 - **Full editor** (upload your own CSV/JSON): http://localhost:1313/
@@ -29,7 +34,34 @@ Two entry points once the server is running:
 | `static/data/` | Demo CSVs and saved visualization presets served by Hugo. |
 | `content/examples/` | Example pages that point at files in `static/data/`. |
 
-To add a new dataset: profile and reshape the raw data into the `dim::` / `desc::` / `med::` / `res::` schema (the `plew-prepare-dataset` skill automates this), copy the resulting CSV into `static/data/`, then add a page under `content/examples/`.
+To add a new dataset: profile and reshape the raw data into the `dim::` / `desc::` / `med::` / `res::` schema, copy the resulting CSV into `static/data/`, then add a page under `content/examples/`. See [Cursor skill](#cursor-skill-plew-prepare-dataset) below for an automated workflow.
+
+## Cursor skill: `plew-prepare-dataset`
+
+This repo includes a [Cursor Agent Skill](https://cursor.com/docs/agent/skills) at `.cursor/skills/plew-prepare-dataset/` that profiles raw human-evaluation data and transforms it into PLeW-ready CSV—or writes `PLEW_UNSUITABLE.md` with reasons when the data does not fit.
+
+**In Cursor**, ask the agent to prepare a dataset, for example:
+
+> Make `eval-data-raw/summeval/` ready for PLeW
+
+The skill will:
+
+1. Profile the raw files under `eval-data-raw/<dataset>/`
+2. Infer the observation unit (e.g. one row = one judgment)
+3. Reshape wide/nested tables into long format with `dim::`, `desc::`, `med::`, and `res::` columns
+4. Write outputs to `eval-data-processed/<dataset>/`:
+   - `<dataset>_plew_ready.csv`
+   - `PLEW_MANIFEST.md` (column mapping, subset strategy, suggested grid encodings)
+   - `transform.py` (reproducible script)
+
+You can also run the helper scripts directly:
+
+```bash
+python .cursor/skills/plew-prepare-dataset/scripts/profile.py eval-data-raw/<dataset>/<file>
+python .cursor/skills/plew-prepare-dataset/scripts/validate_plew_csv.py eval-data-processed/<dataset>/<dataset>_plew_ready.csv
+```
+
+Full workflow, suitability rules, and reshape patterns are in `.cursor/skills/plew-prepare-dataset/SKILL.md`.
 
 ## Troubleshooting
 
