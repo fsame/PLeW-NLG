@@ -5,23 +5,4 @@ public/
 # Raw downloads and local catalog notes (not published)
 eval-data-raw/
 
-# Processed datasets without a live example page
-eval-data-processed/frank/
-eval-data-processed/vaquum/
-
-# Demo CSVs/presets for datasets without a live example page
-static/data/frank_*.csv
-static/data/plew-setup-frank-*.json
-static/data/flickr8k_crowd.csv
-
-# Generation-corpus staging (optional; not wired to demos yet)
-data-raw/**/*
-!data-raw/SOURCES.md
-
 .download-venv/
-
-# Embedded upstream snapshot — not part of this fork's history
-PLeW-main/
-# Manuscript drafts (local only)
-paper/
-*.pdf
