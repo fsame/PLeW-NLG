@@ -365,6 +365,123 @@
         .dimension-list {
             list-style: none;
         }
+
+        /* Column role editor */
+        .column-role-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .column-role-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 6px 8px;
+            background: #232a33;
+            border-radius: 8px;
+            margin-bottom: 6px;
+        }
+
+        .column-role-name {
+            font-size: 0.75rem;
+            color: #e8e8e8;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+        }
+
+        .column-role-select {
+            font-size: 0.68rem;
+            padding: 4px 6px;
+            background: #1a1f26;
+            color: #e8e8e8;
+            border: 1px solid #3d4654;
+            border-radius: 6px;
+            max-width: 7.5rem;
+        }
+
+        .column-role-controls {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .column-visibility-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 2px 4px;
+            font-size: 0.8rem;
+            line-height: 1;
+            opacity: 0.35;
+            flex-shrink: 0;
+        }
+
+        .column-visibility-btn.is-visible {
+            opacity: 1;
+        }
+
+        .column-visibility-btn:hover {
+            opacity: 1;
+        }
+
+        .column-role-item.is-record-hidden .column-role-name {
+            opacity: 0.45;
+        }
+
+        .column-roles-toggle-btn {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 0;
+            margin-bottom: 10px;
+            cursor: pointer;
+            user-select: none;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+        }
+
+        .column-roles-toggle-btn:hover {
+            color: #4ecdc4;
+        }
+
+        .column-roles-chevron {
+            display: inline-block;
+            width: 0.75rem;
+            color: #888;
+        }
+
+        .column-roles-summary {
+            font-size: 0.65rem;
+            color: #888;
+            font-weight: normal;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        #columnRolesSection .column-roles-body {
+            display: none;
+        }
+
+        #columnRolesSection.expanded .column-roles-body {
+            display: block;
+            margin-top: 8px;
+        }
+
+        #columnRolesSection.expanded .column-roles-toggle-btn {
+            margin-bottom: 0;
+        }
         
         .dimension-item {
             display: flex;
@@ -683,6 +800,33 @@
         }
         .display-options-dropdown.open { display: flex; }
         .display-options-dropdown .viz-checkbox { white-space: nowrap; }
+
+        .column-roles-dropdown {
+            display: none;
+            flex-direction: column;
+            min-width: 300px;
+            max-width: min(380px, 92vw);
+            max-height: min(440px, 65vh);
+            padding: 0;
+            overflow: hidden;
+        }
+        .column-roles-dropdown.open { display: flex; }
+        .column-roles-dropdown-hint {
+            font-size: 0.65rem;
+            color: #888;
+            line-height: 1.4;
+            padding: 10px 12px 8px;
+            border-bottom: 1px solid #2d3640;
+        }
+        .column-roles-dropdown-list {
+            overflow-y: auto;
+            padding: 8px;
+            margin: 0;
+        }
+        .column-roles-header-badge {
+            color: #4ecdc4;
+            font-weight: normal;
+        }
         
         /* grid Grid */
         .grid-grid-container {
@@ -832,6 +976,12 @@
         .data-point.modified {
             box-shadow: 0 0 0 2px #ffd93d;
         }
+
+        .data-point.selected {
+            box-shadow: 0 0 0 2px #fff, 0 0 0 4px #4ecdc4;
+            z-index: 11;
+            transform: scale(1.25);
+        }
         
         .data-point.shape-circle { border-radius: 50%; }
         .data-point.shape-square { border-radius: 2px; }
@@ -841,6 +991,9 @@
         }
         .data-point.shape-diamond:hover {
             transform: rotate(45deg) scale(1.4);
+        }
+        .data-point.shape-diamond.selected {
+            transform: rotate(45deg) scale(1.25);
         }
         .data-point.shape-triangle {
             width: 0;
@@ -1733,6 +1886,10 @@
             box-shadow: 0 0 0 2px #b8960a;
         }
 
+        .snapshot-light .data-point.selected {
+            box-shadow: 0 0 0 2px #fff, 0 0 0 4px #2a9d8f;
+        }
+
         .snapshot-light .data-point.dummy-point {
             border-color: rgba(0, 0, 0, 0.3);
         }
@@ -2118,6 +2275,17 @@
                     </div>
                 </div>
                                 
+                <div class="section" id="columnRolesSection" style="display: none;">
+                    <button type="button" class="section-title column-roles-toggle-btn" id="columnRolesToggle" onclick="toggleColumnRolesSection()" title="Show or hide column role editor">
+                        <span><span class="column-roles-chevron" id="columnRolesChevron">▸</span> Column roles</span>
+                        <span class="column-roles-summary" id="columnRolesSummary"></span>
+                    </button>
+                    <div class="column-roles-body" id="columnRolesBody">
+                        <div class="value-filters-hint">Also in the grid header: <strong>Column roles ▾</strong>. 👁 toggles record-window visibility.</div>
+                        <ul class="column-role-list" id="columnRoleList"></ul>
+                    </div>
+                </div>
+
                 <div class="section" id="dimensionSection" style="display: none;">
                     <div class="section-title">
                         <span>Dimensions</span>
@@ -2251,6 +2419,13 @@
                     <div class="viz-stats" id="vizStats"></div>
                 </div>
                 <div class="viz-actions">
+                    <div class="label-style-wrap" id="columnRolesHeaderWrap" style="display: none;">
+                        <button class="label-style-btn" id="columnRolesHeaderBtn" onclick="toggleColumnRolesDropdown(event)" title="Assign column roles and record-window visibility">Column roles ▾<span class="column-roles-header-badge" id="columnRolesHeaderBadge"></span></button>
+                        <div class="label-style-dropdown column-roles-dropdown" id="columnRolesHeaderDropdown">
+                            <div class="column-roles-dropdown-hint">Role per column · 👁 shows or hides in the record window · use Download CSV to save prefixes</div>
+                            <ul class="column-role-list column-roles-dropdown-list" id="columnRoleHeaderList"></ul>
+                        </div>
+                    </div>
                     <div class="label-style-wrap" id="labelStyleWrap">
                         <button class="label-style-btn" id="labelStyleBtn" onclick="toggleLabelStylegrid(event)" title="Adjust size and color of outer and inner panel labels">Label styling ▾</button>
                         <div class="label-style-dropdown" id="labelStyleDropdown">
@@ -2620,7 +2795,10 @@
                     countSize: document.getElementById('countSize')?.value ?? '0.6',
                     countColor: document.getElementById('countColor')?.value ?? '#555555'
                 },
-                dummySettings: { ...dummySettings }
+                dummySettings: { ...dummySettings },
+                columns: {
+                    visibility: { ...columnVisibility }
+                }
             };
         }
         
@@ -2711,6 +2889,11 @@
             if (config.dummySettings) {
                 dummySettings = { ...dummySettings, ...config.dummySettings };
             }
+
+            if (config.columns?.visibility && typeof config.columns.visibility === 'object') {
+                columnVisibility = { ...config.columns.visibility };
+                ensureColumnVisibilityDefaults(getEditableColumns());
+            }
             
             return true;
         }
@@ -2718,6 +2901,7 @@
         function applyVisualizationConfig(config, options = {}) {
             const { silent = false } = options;
             if (!applyConfigState(config, { silent })) return false;
+            renderColumnRolesSection();
             renderDimensionList();
             renderDummySettingsUI();
             updateVisualization();
@@ -2888,10 +3072,48 @@
         
         function shouldExcludeFromModalTable(key) {
             const parsed = parseColumnPrefix(key);
-            if (parsed && (parsed.type === 'res' || parsed.type === 'med')) return true;
+            if (parsed && parsed.type === 'med') return true;
             const dn = getDisplayName(key);
             if (RESERVED_COLUMNS.some(rc => dn.toLowerCase() === rc)) return true;
-            return isMediaRelatedColumn(key);
+            if (isMediaRelatedColumn(key)) return true;
+            return !isColumnVisibleInRecord(key);
+        }
+
+        function isColumnVisibleInRecord(header) {
+            if (Object.prototype.hasOwnProperty.call(columnVisibility, header)) {
+                return !!columnVisibility[header];
+            }
+            return true;
+        }
+
+        function ensureColumnVisibilityDefaults(headers) {
+            (headers || getEditableColumns()).forEach(header => {
+                if (!(header in columnVisibility)) columnVisibility[header] = true;
+            });
+            Object.keys(columnVisibility).forEach(header => {
+                if (!csvHeaders.includes(header)) delete columnVisibility[header];
+            });
+        }
+
+        function setColumnRecordVisible(header, visible) {
+            columnVisibility[header] = !!visible;
+            renderColumnRolesSection();
+        }
+
+        function toggleColumnRecordVisible(header) {
+            setColumnRecordVisible(header, !isColumnVisibleInRecord(header));
+        }
+
+        function getModalTableColumnKeys(row) {
+            const roleOrder = { dim: 0, desc: 1, res: 2, auto: 3 };
+            return Object.keys(row)
+                .filter(key => !key.startsWith('_') && !shouldExcludeFromModalTable(key))
+                .sort((a, b) => {
+                    const ra = roleOrder[getColumnRole(a)] ?? 3;
+                    const rb = roleOrder[getColumnRole(b)] ?? 3;
+                    if (ra !== rb) return ra - rb;
+                    return getDisplayName(a).localeCompare(getDisplayName(b));
+                });
         }
         
         function getModalTitleFromRow(row) {
@@ -2963,6 +3185,7 @@
         // Custom color & shape mappings (value -> override)
         let customColorMap = {};   // { dimensionValue: '#hexcolor' }
         let customShapeMap = {};   // { dimensionValue: 'shapeName' }
+        let columnVisibility = {}; // { header: boolean } — record-window visibility
         
         let uniformgridSizes = false;
         let unifyInnerPanel = false;
@@ -2975,6 +3198,9 @@
         
         // Context menu state
         let contextMenuRowIndex = null;
+
+        // Last clicked point (persists after closing record modal)
+        let selectedRowIndex = null;
         
         // ============================================================
         // SIDEBAR TOGGLE
@@ -3404,6 +3630,7 @@
             
             // Check auto-detected media columns
             mediaColumns.forEach(mc => {
+                if (!isColumnVisibleInRecord(mc.column)) return;
                 const url = row[mc.column];
                 if (!url || url.trim() === '') return;
                 
@@ -3757,6 +3984,7 @@
             // Re-assign _index
             currentData.forEach((row, i) => { row._index = i; });
             modifiedRows.clear();
+            selectedRowIndex = null;
             changeLog = [];
             undoStack = [];
             redoStack = [];
@@ -3946,6 +4174,249 @@
             dims.sort((a, b) => b.cardinality - a.cardinality);
             
             return dims;
+        }
+
+        const COLUMN_ROLE_OPTIONS = [
+            { value: 'auto', label: 'Auto' },
+            { value: 'dim', label: 'Dimension' },
+            { value: 'desc', label: 'Description' },
+            { value: 'med', label: 'Media' },
+            { value: 'res', label: 'Reserved metadata' }
+        ];
+
+        function getColumnRole(header) {
+            const parsed = parseColumnPrefix(header);
+            return parsed ? parsed.type : 'auto';
+        }
+
+        function buildHeaderForRole(displayName, role) {
+            if (role === 'auto') return displayName;
+            return `${role}::${displayName}`;
+        }
+
+        function getEditableColumns() {
+            if (!csvHeaders || csvHeaders.length === 0) return [];
+            return csvHeaders.filter(h => !h.startsWith('_'));
+        }
+
+        function renameColumnKey(oldKey, newKey) {
+            if (oldKey === newKey) return;
+
+            const renameInRows = (rows) => {
+                rows.forEach(row => {
+                    if (Object.prototype.hasOwnProperty.call(row, oldKey)) {
+                        row[newKey] = row[oldKey];
+                        delete row[oldKey];
+                    }
+                });
+            };
+
+            renameInRows(currentData);
+            renameInRows(originalData);
+            renameInRows(dummyRows);
+
+            csvHeaders = csvHeaders.map(h => (h === oldKey ? newKey : h));
+
+            changeLog.forEach(entry => {
+                if (entry.field === oldKey) entry.field = newKey;
+            });
+            [undoStack, redoStack].forEach(stack => {
+                stack.forEach(action => {
+                    action.changes?.forEach(change => {
+                        if (change.field === oldKey) change.field = newKey;
+                    });
+                });
+            });
+
+            if (dimensionValueFilters[oldKey]) {
+                dimensionValueFilters[newKey] = dimensionValueFilters[oldKey];
+                delete dimensionValueFilters[oldKey];
+            }
+            if (Object.prototype.hasOwnProperty.call(columnVisibility, oldKey)) {
+                columnVisibility[newKey] = columnVisibility[oldKey];
+                delete columnVisibility[oldKey];
+            }
+        }
+
+        function rebuildDimensionsAfterColumnRoleChange() {
+            const prevEncodings = { ...dimensionEncodings };
+            const prevOrder = [...userDimensionOrder];
+            const prevEnabled = new Set(enabledDimensions);
+
+            mediaColumns = detectMediaColumns(csvHeaders);
+
+            let nextDimensions = analyzeDimensions(csvHeaders, currentData);
+            if (dummyRows.length > 0) {
+                nextDimensions = mergeValueSpaces(nextDimensions, dummyRows, csvHeaders);
+                const validation = validateAnchors(dummyRows, nextDimensions, csvHeaders);
+                if (!validation.valid) {
+                    dummyRows = generateDummyRows(nextDimensions, csvHeaders);
+                }
+            }
+
+            allDimensions = nextDimensions;
+
+            preservedDimValues = {};
+            allDimensions.forEach(dim => {
+                preservedDimValues[dim.name] = [...dim.uniqueValues];
+            });
+
+            const newNames = allDimensions.map(d => d.name);
+            userDimensionOrder = [
+                ...prevOrder.filter(name => newNames.includes(name)),
+                ...newNames.filter(name => !prevOrder.includes(name))
+            ];
+            enabledDimensions = new Set([...prevEnabled].filter(name => newNames.includes(name)));
+            newNames.filter(name => !prevOrder.includes(name)).forEach(name => enabledDimensions.add(name));
+
+            dimensionEncodings = {};
+            userDimensionOrder.forEach(name => {
+                if (prevEncodings[name]) dimensionEncodings[name] = prevEncodings[name];
+            });
+            autoAssignEncodingsFromOrder();
+
+            renderColumnRolesSection();
+            renderDimensionList();
+            updateVisualization();
+        }
+
+        function setColumnRole(oldHeader, newRole) {
+            if (!currentData || !COLUMN_ROLE_OPTIONS.some(opt => opt.value === newRole)) return;
+            const displayName = getDisplayName(oldHeader);
+            const newHeader = buildHeaderForRole(displayName, newRole);
+            if (newHeader === oldHeader) return;
+
+            renameColumnKey(oldHeader, newHeader);
+            rebuildDimensionsAfterColumnRoleChange();
+        }
+
+        function toggleColumnRolesSection(forceOpen) {
+            const section = document.getElementById('columnRolesSection');
+            if (!section) return;
+
+            const expanded = typeof forceOpen === 'boolean'
+                ? forceOpen
+                : !section.classList.contains('expanded');
+            syncColumnRolesExpanded(expanded);
+        }
+
+        function syncColumnRolesExpanded(expanded) {
+            const section = document.getElementById('columnRolesSection');
+            const chevron = document.getElementById('columnRolesChevron');
+            if (!section) return;
+            section.classList.toggle('expanded', expanded);
+            if (chevron) chevron.textContent = expanded ? '▾' : '▸';
+        }
+
+        function createColumnRoleListItem(header) {
+            const li = document.createElement('li');
+            li.className = 'column-role-item';
+            if (!isColumnVisibleInRecord(header)) li.classList.add('is-record-hidden');
+
+            const name = document.createElement('div');
+            name.className = 'column-role-name';
+            name.title = header;
+            name.textContent = getDisplayName(header);
+
+            const visBtn = document.createElement('button');
+            visBtn.type = 'button';
+            visBtn.className = 'column-visibility-btn' + (isColumnVisibleInRecord(header) ? ' is-visible' : '');
+            visBtn.textContent = '👁';
+            visBtn.title = isColumnVisibleInRecord(header)
+                ? 'Hide in record window'
+                : 'Show in record window';
+            visBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleColumnRecordVisible(header);
+            });
+
+            const select = document.createElement('select');
+            select.className = 'column-role-select';
+            select.title = 'Column role';
+            COLUMN_ROLE_OPTIONS.forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt.value;
+                option.textContent = opt.label;
+                if (getColumnRole(header) === opt.value) option.selected = true;
+                select.appendChild(option);
+            });
+            select.addEventListener('change', () => {
+                setColumnRole(header, select.value);
+            });
+            select.addEventListener('click', (e) => e.stopPropagation());
+
+            const controls = document.createElement('div');
+            controls.className = 'column-role-controls';
+            controls.append(visBtn, select);
+
+            li.append(name, controls);
+            return li;
+        }
+
+        function renderColumnRoleList(container) {
+            if (!container) return;
+            container.innerHTML = '';
+            getEditableColumns().forEach(header => {
+                container.appendChild(createColumnRoleListItem(header));
+            });
+        }
+
+        function updateColumnRolesHeaderButton(columns) {
+            const wrap = document.getElementById('columnRolesHeaderWrap');
+            const badge = document.getElementById('columnRolesHeaderBadge');
+            if (!wrap) return;
+
+            if (!columns.length) {
+                wrap.style.display = 'none';
+                if (badge) badge.textContent = '';
+                return;
+            }
+
+            wrap.style.display = '';
+            const autoCount = columns.filter(h => getColumnRole(h) === 'auto').length;
+            if (badge) {
+                badge.textContent = autoCount > 0 ? ` · ${autoCount} Auto` : '';
+            }
+        }
+
+        function toggleColumnRolesDropdown(ev) {
+            ev?.stopPropagation();
+            const dropdown = document.getElementById('columnRolesHeaderDropdown');
+            if (!dropdown) return;
+            const opening = !dropdown.classList.contains('open');
+            document.getElementById('labelStyleDropdown')?.classList.remove('open');
+            document.getElementById('displayOptionsDropdown')?.classList.remove('open');
+            dropdown.classList.toggle('open', opening);
+            if (opening) renderColumnRoleList(document.getElementById('columnRoleHeaderList'));
+        }
+
+        function renderColumnRolesSection() {
+            const section = document.getElementById('columnRolesSection');
+            const list = document.getElementById('columnRoleList');
+            const summary = document.getElementById('columnRolesSummary');
+            if (!section || !list) return;
+
+            const expanded = section.classList.contains('expanded');
+            const columns = getEditableColumns();
+            if (!currentData || columns.length === 0) {
+                section.style.display = 'none';
+                list.innerHTML = '';
+                renderColumnRoleList(document.getElementById('columnRoleHeaderList'));
+                if (summary) summary.textContent = '';
+                updateColumnRolesHeaderButton([]);
+                syncColumnRolesExpanded(false);
+                document.getElementById('columnRolesHeaderDropdown')?.classList.remove('open');
+                return;
+            }
+
+            section.style.display = 'block';
+            if (summary) summary.textContent = `${columns.length} columns`;
+            ensureColumnVisibilityDefaults(columns);
+            renderColumnRoleList(list);
+            renderColumnRoleList(document.getElementById('columnRoleHeaderList'));
+            updateColumnRolesHeaderButton(columns);
+
+            syncColumnRolesExpanded(expanded);
         }
         
         function getActiveDimensions() {
@@ -4162,6 +4633,7 @@
         // ============================================================
         function showContextMenu(e, rowIndex) {
             e.preventDefault();
+            selectDataPoint(rowIndex);
             
             const hasColor = !!encodings.color;
             const hasShape = !!encodings.shape;
@@ -4313,8 +4785,18 @@
             if (!e.target.closest('#displayOptionsWrap')) {
                 document.getElementById('displayOptionsDropdown')?.classList.remove('open');
             }
+            if (!e.target.closest('#columnRolesHeaderWrap')) {
+                document.getElementById('columnRolesHeaderDropdown')?.classList.remove('open');
+            }
             if (!e.target.closest('.shape-selector-popup') && !e.target.closest('.legend-shape-btn')) {
                 closeShapeSelectorPopup();
+            }
+        });
+
+        // Clear click history only when clicking empty grid space (not sidebar/modal)
+        document.getElementById('vizContainer').addEventListener('click', (e) => {
+            if (!e.target.closest('.data-point')) {
+                clearSelection();
             }
         });
         
@@ -4924,12 +5406,14 @@
         
         function toggleLabelStylegrid(ev) {
             ev?.stopPropagation();
+            document.getElementById('columnRolesHeaderDropdown')?.classList.remove('open');
             const dropdown = document.getElementById('labelStyleDropdown');
             dropdown.classList.toggle('open');
         }
 
         function toggleDisplayOptions(ev) {
             ev?.stopPropagation();
+            document.getElementById('columnRolesHeaderDropdown')?.classList.remove('open');
             const dropdown = document.getElementById('displayOptionsDropdown');
             dropdown.classList.toggle('open');
         }
@@ -5131,9 +5615,13 @@
             
             // --- Normal (non-dummy) data point ---
             point.draggable = true;
+            point.dataset.rowIndex = rowIndex;
             
             if (isModified) {
                 point.classList.add('modified');
+            }
+            if (rowIndex === selectedRowIndex) {
+                point.classList.add('selected');
             }
             
             const hasMedia = rowHasMedia(row);
@@ -5163,7 +5651,11 @@
             point.addEventListener('mousemove', moveTooltip);
             
             // Click for modal
-            point.addEventListener('click', () => openModal(row, encodings));
+            point.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectDataPoint(rowIndex);
+                openModal(row, encodings);
+            });
             
             // Right-click for color menu
             point.addEventListener('contextmenu', (e) => showContextMenu(e, rowIndex));
@@ -5225,6 +5717,24 @@
         // ============================================================
         // MODAL
         // ============================================================
+        function selectDataPoint(rowIndex) {
+            selectedRowIndex = rowIndex;
+            syncPointSelectionClasses();
+        }
+
+        function clearSelection() {
+            if (selectedRowIndex === null) return;
+            selectedRowIndex = null;
+            syncPointSelectionClasses();
+        }
+
+        function syncPointSelectionClasses() {
+            document.querySelectorAll('.data-point[data-row-index]').forEach(el => {
+                const idx = Number(el.dataset.rowIndex);
+                el.classList.toggle('selected', idx === selectedRowIndex);
+            });
+        }
+
         function openModal(row, encodings) {
             const modalBody = document.getElementById('modalBody');
             const modalTitle = document.getElementById('modalTitle');
@@ -5233,10 +5743,7 @@
             
             let tableHTML = '<table class="data-table">';
             
-            Object.keys(row).forEach(key => {
-                if (key.startsWith('_')) return;
-                if (shouldExcludeFromModalTable(key)) return;
-                
+            getModalTableColumnKeys(row).forEach(key => {
                 let valueHTML = row[key];
                 
                 if (encodings.color && key === dimKey(encodings.color)) {
@@ -5788,12 +6295,14 @@
             originalData = JSON.parse(JSON.stringify(realData));
             currentData = realData;
             modifiedRows.clear();
+            selectedRowIndex = null;
             changeLog = [];
             undoStack = [];
             redoStack = [];
             customColorMap = {};
             customShapeMap = {};
             dimensionValueFilters = {};
+            columnVisibility = {};
             toggleEncodingLegend(false);
             pageVizPresets = [];
             activeVizPresetLabel = null;
@@ -5802,7 +6311,10 @@
             enabledDimensions = new Set(userDimensionOrder);
             autoAssignEncodingsFromOrder();
             
+            ensureColumnVisibilityDefaults(headers);
+            
             document.getElementById('vizConfigSection').style.display = 'block';
+            renderColumnRolesSection();
             renderDimensionList();
             renderDummySettingsUI();
             updateChangesIndicator();
