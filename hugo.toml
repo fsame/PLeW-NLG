@@ -1,6 +1,6 @@
-# Local dev: hugo server serves at http://localhost:1313/
-# GitHub Actions overrides this when deploying (see .github/workflows/hugo.yml).
-baseURL = '/'
+# Local dev: hugo server prints and uses this URL.
+# GitHub Actions overrides --baseURL when deploying (see .github/workflows/hugo.yml).
+baseURL = 'http://localhost:1313/'
 languageCode = 'en-us'
 title = 'PLeW-NLG'
 
@@ -9,3 +9,11 @@ title = 'PLeW-NLG'
 
 [markup.goldmark.renderer]
   unsafe = true
+
+# Publish the self-contained guide at /user-guide.html (images are inlined).
+[[module.mounts]]
+  source = 'static'
+  target = 'static'
+[[module.mounts]]
+  source = 'docs/user-guide-standalone.html'
+  target = 'static/user-guide.html'

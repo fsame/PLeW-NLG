@@ -34,6 +34,24 @@
             color: #8899a6;
             font-size: 14px;
         }
+        .guide-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 16px;
+            padding: 8px 14px;
+            background: rgba(78, 205, 196, 0.14);
+            border: 1px solid #4ecdc4;
+            border-radius: 8px;
+            color: #4ecdc4;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .guide-btn:hover {
+            background: rgba(78, 205, 196, 0.28);
+            color: #7eefe8;
+        }
         .gallery-page {
             padding: 40px;
             max-width: 1100px;
@@ -115,6 +133,7 @@
         <a class="back-link" href="{{ .Site.BaseURL }}">← Full Editor</a>
         <h1>Example Datasets</h1>
         <p>Human evaluation and annotation datasets for NLG.</p>
+        <a class="guide-btn" href="{{ "user-guide.html" | relURL }}">📖 User guide</a>
     </div>
     <div class="gallery-page">
         {{ $pages := .Pages }}
