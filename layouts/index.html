@@ -339,6 +339,28 @@
             width: auto;
             margin-top: 0;
         }
+
+        .guide-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 10px;
+            padding: 8px 14px;
+            background: rgba(78, 205, 196, 0.14);
+            border: 1px solid #4ecdc4;
+            border-radius: 8px;
+            color: #4ecdc4;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .guide-btn:hover {
+            background: rgba(78, 205, 196, 0.28);
+            color: #7eefe8;
+        }
+        .empty-state .guide-btn {
+            margin-top: 18px;
+        }
         
         /* Changes indicator */
         .changes-indicator {
@@ -394,6 +416,17 @@
             background: #232a33;
             border-radius: 8px;
             margin-bottom: 6px;
+            border: 1px solid transparent;
+        }
+
+        .column-role-item.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .column-role-item.drag-over {
+            border-color: #666;
+            background: #2a3038;
         }
 
         .column-role-name {
@@ -994,9 +1027,18 @@
         }
 
         .data-point.selected {
-            box-shadow: 0 0 0 2px #fff, 0 0 0 4px #4ecdc4;
+            box-shadow: 0 0 0 2px #fff, 0 0 0 4px #bbb;
             z-index: 11;
             transform: scale(1.25);
+        }
+
+        .data-point.compare-b {
+            box-shadow: 0 0 0 2px #fff, 0 0 0 4px #666;
+            z-index: 10;
+        }
+
+        .data-point.selected.compare-b {
+            box-shadow: 0 0 0 2px #fff, 0 0 0 4px #888;
         }
         
         .data-point.shape-circle { border-radius: 50%; }
@@ -1011,13 +1053,41 @@
         .data-point.shape-diamond.selected {
             transform: rotate(45deg) scale(1.25);
         }
+        .data-point.shape-diamond.compare-b {
+            transform: rotate(45deg) scale(1.15);
+        }
+        .data-point.shape-diamond.selected.compare-b {
+            transform: rotate(45deg) scale(1.25);
+        }
+        .data-point.shape-triangle,
+        .data-point.shape-hexagon {
+            border-radius: 0;
+        }
         .data-point.shape-triangle {
-            width: 0;
-            height: 0;
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            border-bottom: 12px solid currentColor;
-            background: transparent !important;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+        .data-point.shape-hexagon {
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        }
+        .data-point.shape-triangle.modified,
+        .data-point.shape-hexagon.modified {
+            box-shadow: none;
+            filter: drop-shadow(0 0 1px #ffd93d) drop-shadow(0 0 2px #ffd93d);
+        }
+        .data-point.shape-triangle.selected,
+        .data-point.shape-hexagon.selected {
+            box-shadow: none;
+            filter: drop-shadow(0 0 1px #fff) drop-shadow(0 0 2px #bbb);
+        }
+        .data-point.shape-triangle.compare-b,
+        .data-point.shape-hexagon.compare-b {
+            box-shadow: none;
+            filter: drop-shadow(0 0 1px #fff) drop-shadow(0 0 2px #666);
+        }
+        .data-point.shape-triangle.selected.compare-b,
+        .data-point.shape-hexagon.selected.compare-b {
+            box-shadow: none;
+            filter: drop-shadow(0 0 1px #fff) drop-shadow(0 0 2px #888);
         }
         
         /* Axis dimension labels on grids */
@@ -1206,6 +1276,10 @@
         .modal-overlay.active .modal {
             transform: scale(1) translateY(0);
         }
+
+        .modal.compare-modal {
+            max-width: min(920px, 95vw);
+        }
         
         .modal-header {
             padding: 20px 25px;
@@ -1237,6 +1311,12 @@
         .modal-snap-btn:hover {
             background: rgba(255, 255, 255, 0.2);
             color: white;
+        }
+
+        .modal-snap-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         
         .modal-close {
@@ -1318,13 +1398,93 @@
             font-weight: 500;
             font-size: 0.9rem;
         }
-        
-        .data-tag {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 20px;
+
+        .compare-slot-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px 16px;
+            padding: 10px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.75rem;
+            color: #aaa;
+        }
+
+        .compare-slot-label strong {
+            color: #d4d4d4;
+        }
+
+        .compare-slot-label.compare-slot-b strong {
+            color: #888;
+        }
+
+        .compare-slot-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 6px;
+        }
+
+        .compare-hint {
+            font-size: 0.65rem;
+            color: #666;
+            margin: 0;
+            padding: 0 25px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .compare-diff-table th {
+            color: #888;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-align: left;
+            padding: 8px 10px 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .compare-diff-table th:nth-child(2),
+        .compare-diff-table th:nth-child(3) {
+            color: #888;
+        }
+
+        .compare-diff-table td {
+            padding: 8px 10px 8px 0;
+            vertical-align: top;
+            font-size: 0.85rem;
+        }
+
+        .compare-diff-table td:first-child {
+            color: #888;
+            width: 28%;
             font-size: 0.8rem;
-            margin: 2px;
+        }
+
+        .compare-diff-row .compare-diff-cell {
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 2px;
+        }
+
+        .compare-media-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .compare-media-col-title {
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .compare-media-col-title.slot-a,
+        .compare-media-col-title.slot-b {
+            color: #888;
+        }
+
+        .compare-empty {
+            font-size: 0.75rem;
+            color: #555;
+            margin: 0;
         }
         
         /* Media Container */
@@ -1852,6 +2012,16 @@
             box-shadow: 0 0 0 2px #fff, 0 0 0 4px #2a9d8f;
         }
 
+        .snapshot-light .data-point.shape-triangle.modified,
+        .snapshot-light .data-point.shape-hexagon.modified {
+            filter: drop-shadow(0 0 1px #b8960a) drop-shadow(0 0 2px #b8960a);
+        }
+
+        .snapshot-light .data-point.shape-triangle.selected,
+        .snapshot-light .data-point.shape-hexagon.selected {
+            filter: drop-shadow(0 0 1px #fff) drop-shadow(0 0 2px #2a9d8f);
+        }
+
         .snapshot-light .data-point.dummy-point {
             border-color: rgba(0, 0, 0, 0.3);
         }
@@ -1898,6 +2068,76 @@
             border-color: #ccc;
             background: #fff;
             color: #222;
+        }
+
+        /* Record modal — light snapshot */
+        .modal.snapshot-light {
+            background: linear-gradient(145deg, #fafafa, #eef1f5);
+            border-color: rgba(0, 0, 0, 0.12);
+            color: #1a1a1a;
+        }
+
+        .modal.snapshot-light .modal-header {
+            border-bottom-color: rgba(0, 0, 0, 0.08);
+        }
+
+        .modal.snapshot-light .modal-header h3 {
+            color: #1a1a1a;
+        }
+
+        .modal.snapshot-light .compare-slot-bar {
+            border-bottom-color: rgba(0, 0, 0, 0.08);
+            color: #666;
+        }
+
+        .modal.snapshot-light .compare-hint {
+            color: #888;
+            border-bottom-color: rgba(0, 0, 0, 0.06);
+        }
+
+        .modal.snapshot-light .data-table tr,
+        .modal.snapshot-light .compare-diff-table tr {
+            border-bottom-color: rgba(0, 0, 0, 0.08);
+        }
+
+        .modal.snapshot-light .data-table td:first-child,
+        .modal.snapshot-light .compare-diff-table td:first-child,
+        .modal.snapshot-light .compare-diff-table th {
+            color: #666;
+        }
+
+        .modal.snapshot-light .data-table td:last-child,
+        .modal.snapshot-light .compare-diff-table td {
+            color: #1a1a1a;
+        }
+
+        .modal.snapshot-light .compare-slot-label strong {
+            color: #333;
+        }
+
+        .modal.snapshot-light .compare-slot-label.compare-slot-b strong {
+            color: #666;
+        }
+
+        .modal.snapshot-light .compare-diff-table th:nth-child(2),
+        .modal.snapshot-light .compare-diff-table th:nth-child(3) {
+            color: #666;
+        }
+
+        .modal.snapshot-light .compare-diff-row .compare-diff-cell {
+            background: #ebebeb;
+        }
+
+        .modal.snapshot-light .media-section-title {
+            color: #444;
+        }
+
+        .modal.snapshot-light .compare-media-col-title {
+            color: #666;
+        }
+
+        .modal.snapshot-light .compare-empty {
+            color: #999;
         }
         
         /* Change Log Section */
@@ -2197,6 +2437,7 @@
             <div class="sidebar-content">
                 <h1>📊 Data Editor</h1>
                 <p class="subtitle">Drag points to reclassify • Right-click to change color/shape</p>
+                <a class="guide-btn" href="{{ "user-guide.html" | relURL }}">📖 User guide</a>
                 <p style="margin-top:8px;"><a href="{{ "examples/" | relURL }}" style="color:#4ecdc4;text-decoration:none;font-size:12px;">View example datasets →</a></p>
 
                 <div class="section">
@@ -2254,7 +2495,7 @@
                         <span class="column-roles-summary" id="columnRolesSummary"></span>
                     </button>
                     <div class="column-roles-body" id="columnRolesBody">
-                        <div class="value-filters-hint">Also in the grid header: <strong>Column roles ▾</strong>. 👁 toggles record-window visibility.</div>
+                        <div class="value-filters-hint">Also in the grid header: <strong>Column roles ▾</strong>. Drag to reorder record fields · 👁 toggles visibility.</div>
                         <ul class="column-role-list" id="columnRoleList"></ul>
                     </div>
                 </div>
@@ -2341,6 +2582,7 @@
                                 <option value="square">Square</option>
                                 <option value="diamond" selected>Diamond</option>
                                 <option value="triangle">Triangle</option>
+                                <option value="hexagon">Hexagon</option>
                             </select>
                         </div>
                         <div class="dummy-info-text">
@@ -2400,7 +2642,7 @@
                     <div class="label-style-wrap" id="columnRolesHeaderWrap" style="display: none;">
                         <button class="label-style-btn" id="columnRolesHeaderBtn" onclick="toggleColumnRolesDropdown(event)" title="Assign column roles and record-window visibility">Column roles ▾<span class="column-roles-header-badge" id="columnRolesHeaderBadge"></span></button>
                         <div class="label-style-dropdown column-roles-dropdown" id="columnRolesHeaderDropdown">
-                            <div class="column-roles-dropdown-hint">Role per column · 👁 shows or hides in the record window · use Download CSV to save prefixes</div>
+                            <div class="column-roles-dropdown-hint">Drag to reorder fields · Role per column · 👁 record-window visibility</div>
                             <ul class="column-role-list column-roles-dropdown-list" id="columnRoleHeaderList"></ul>
                         </div>
                     </div>
@@ -2472,6 +2714,7 @@
                     <div class="empty-state-subtext">
                         Upload a CSV or JSON/JSONL file and media files. Drag points to reclassify them, then download the updated CSV.
                     </div>
+                    <a class="guide-btn" href="{{ "user-guide.html" | relURL }}">📖 User guide</a>
                 </div>
             </div>
         </div>
@@ -2479,7 +2722,7 @@
     
     <!-- Keyboard hint -->
     <div class="keyboard-hint">
-        <kbd>B</kbd> sidebar • <kbd>Right-click</kbd> change color/shape • <kbd>Drag</kbd> reclassify • <kbd>Ctrl+Z</kbd> undo • <kbd>Ctrl+Shift+Z</kbd> redo
+        <kbd>B</kbd> sidebar • <kbd>Shift+click</kbd> compare B • <kbd>Right-click</kbd> change color/shape • <kbd>Drag</kbd> reclassify • <kbd>Ctrl+Z</kbd> undo • <kbd>Ctrl+Shift+Z</kbd> redo
     </div>
     
     <!-- Hover Tooltip -->
@@ -2510,11 +2753,22 @@
             <div class="modal-header">
                 <h3 id="modalTitle">Record Details</h3>
                 <div style="display:flex;align-items:center;gap:6px;">
-                    <button class="modal-snap-btn" onclick="snapshotModal('full')" title="Capture full modal as one stacked image">📷 Stacked</button>
-                    <button class="modal-snap-btn" onclick="snapshotModal('horizontal')" title="Capture fields and media side by side">📷 Side-by-side</button>
+                    <div class="modal-snap-actions">
+                        <button type="button" class="btn btn-secondary btn-small" onclick="snapshotModal(false)" title="Dark snapshot">📷 Dark</button>
+                        <button type="button" class="btn btn-secondary btn-small" onclick="snapshotModal(true)" title="Light snapshot">📷 Light</button>
+                    </div>
                     <button class="modal-close" onclick="closeModal()">×</button>
                 </div>
             </div>
+            <div class="compare-slot-bar" id="compareSlotBar" style="display: none;">
+                <span class="compare-slot-label">A: <strong id="compareSlotALabel">—</strong></span>
+                <span class="compare-slot-label compare-slot-b">B: <strong id="compareSlotBLabel">—</strong></span>
+                <div class="compare-slot-actions">
+                    <button type="button" class="modal-snap-btn" onclick="clearCompareSlot('b')">Clear B</button>
+                    <button type="button" class="modal-snap-btn" onclick="clearCompareSlots()">Clear all</button>
+                </div>
+            </div>
+            <p class="compare-hint" id="compareHint" style="display: none;">Click a point for slot A · Shift+click for slot B</p>
             <div class="modal-body" id="modalBody"></div>
         </div>
     </div>
@@ -2561,7 +2815,7 @@
             '#9b59b6', '#e67e22', '#1abc9c', '#e74c3c', '#3498db'
         ];
         
-        const SHAPES = ['circle', 'square', 'diamond', 'triangle'];
+        const SHAPES = ['circle', 'square', 'diamond', 'triangle', 'hexagon'];
         
         const ENCODING_LABELS = [
             { key: 'grid-x', label: 'Grid X', class: 'encoding-grid-x' },
@@ -2766,7 +3020,8 @@
                 },
                 dummySettings: { ...dummySettings },
                 columns: {
-                    visibility: { ...columnVisibility }
+                    visibility: { ...columnVisibility },
+                    recordOrder: [...columnRecordOrder]
                 }
             };
         }
@@ -2863,6 +3118,11 @@
                 columnVisibility = { ...config.columns.visibility };
                 ensureColumnVisibilityDefaults(getEditableColumns());
             }
+
+            if (Array.isArray(config.columns?.recordOrder)) {
+                columnRecordOrder = config.columns.recordOrder.filter(h => getEditableColumns().includes(h));
+            }
+            ensureColumnRecordOrderDefaults(getEditableColumns());
             
             return true;
         }
@@ -2961,22 +3221,67 @@
         function setColumnRecordVisible(header, visible) {
             columnVisibility[header] = !!visible;
             renderColumnRolesSection();
+            refreshOpenRecordModal();
+        }
+
+        function sortRecordColumnsDefault(keys) {
+            const roleOrder = { dim: 0, desc: 1, res: 2, auto: 3 };
+            return [...keys].sort((a, b) => {
+                const ra = roleOrder[getColumnRole(a)] ?? 3;
+                const rb = roleOrder[getColumnRole(b)] ?? 3;
+                if (ra !== rb) return ra - rb;
+                return getDisplayName(a).localeCompare(getDisplayName(b));
+            });
+        }
+
+        function ensureColumnRecordOrderDefaults(headers) {
+            const cols = headers || getEditableColumns();
+            columnRecordOrder = columnRecordOrder.filter(h => cols.includes(h));
+            const missing = cols.filter(h => !columnRecordOrder.includes(h));
+            if (missing.length) {
+                columnRecordOrder.push(...sortRecordColumnsDefault(missing));
+            }
+        }
+
+        function getRecordColumnOrder() {
+            ensureColumnRecordOrderDefaults();
+            return [...columnRecordOrder];
+        }
+
+        function getModalTableColumnKeys(row) {
+            return getRecordColumnOrder()
+                .filter(key => Object.prototype.hasOwnProperty.call(row, key)
+                    && !key.startsWith('_')
+                    && !shouldExcludeFromModalTable(key));
+        }
+
+        function getCompareFieldKeys(rowA, rowB) {
+            const keySet = new Set([
+                ...Object.keys(rowA).filter(k => !k.startsWith('_') && !shouldExcludeFromModalTable(k)),
+                ...Object.keys(rowB).filter(k => !k.startsWith('_') && !shouldExcludeFromModalTable(k))
+            ]);
+            return getRecordColumnOrder().filter(k => keySet.has(k));
+        }
+
+        function refreshOpenRecordModal() {
+            const overlay = document.getElementById('modalOverlay');
+            if (overlay?.classList.contains('active')) {
+                renderCompareModal();
+            }
         }
 
         function toggleColumnRecordVisible(header) {
             setColumnRecordVisible(header, !isColumnVisibleInRecord(header));
         }
 
-        function getModalTableColumnKeys(row) {
-            const roleOrder = { dim: 0, desc: 1, res: 2, auto: 3 };
-            return Object.keys(row)
-                .filter(key => !key.startsWith('_') && !shouldExcludeFromModalTable(key))
-                .sort((a, b) => {
-                    const ra = roleOrder[getColumnRole(a)] ?? 3;
-                    const rb = roleOrder[getColumnRole(b)] ?? 3;
-                    if (ra !== rb) return ra - rb;
-                    return getDisplayName(a).localeCompare(getDisplayName(b));
-                });
+        function compareValuesEqual(a, b) {
+            return String(a ?? '') === String(b ?? '');
+        }
+
+        function getCompareSlotLabel(rowIndex) {
+            if (rowIndex == null || !currentData?.[rowIndex]) return '—';
+            const row = currentData[rowIndex];
+            return `#${rowIndex + 1} · ${getModalTitleFromRow(row)}`;
         }
         
         function getModalTitleFromRow(row) {
@@ -3050,6 +3355,7 @@
         let customColorMap = {};   // { dimensionValue: '#hexcolor' }
         let customShapeMap = {};   // { dimensionValue: 'shapeName' }
         let columnVisibility = {}; // { header: boolean } — record-window visibility
+        let columnRecordOrder = []; // header order for record / compare modal fields
         
         let uniformgridSizes = false;
         let unifyInnerPanel = false;
@@ -3057,14 +3363,16 @@
         
         // Drag and drop state
         let draggedDimensionItem = null;
+        let draggedColumnHeader = null;
         let draggedDataPoint = null;
         let draggedRowIndex = null;
         
         // Context menu state
         let contextMenuRowIndex = null;
 
-        // Last clicked point (persists after closing record modal)
+        // Slot A (selectedRowIndex) and slot B for record comparison
         let selectedRowIndex = null;
+        let compareSlots = { a: null, b: null };
         
         // ============================================================
         // SIDEBAR TOGGLE
@@ -3111,8 +3419,35 @@
         // ============================================================
         // CSV PARSING
         // ============================================================
+        // Split on row breaks only when outside a quoted field, so that long
+        // text cells containing newlines stay in one record.
+        function splitCsvRecords(text) {
+            const records = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                if (char === '"') {
+                    if (inQuotes && text[i + 1] === '"') {
+                        current += '""';
+                        i++;
+                    } else {
+                        inQuotes = !inQuotes;
+                        current += char;
+                    }
+                } else if (char === '\n' && !inQuotes) {
+                    records.push(current.replace(/\r$/, ''));
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            if (current.length > 0) records.push(current.replace(/\r$/, ''));
+            return records;
+        }
+
         function parseCSV(text) {
-            const lines = text.trim().split('\n').map(line => line.replace(/\r$/, ''));
+            const lines = splitCsvRecords(text.trim());
             if (lines.length === 0) return { headers: [], data: [] };
             
             const delimiter = detectDelimiter(lines);
@@ -3155,7 +3490,12 @@
             for (let i = 0; i < line.length; i++) {
                 const char = line[i];
                 if (char === '"') {
-                    inQuotes = !inQuotes;
+                    if (inQuotes && line[i + 1] === '"') {
+                        current += '"';
+                        i++;
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
                 } else if (char === delimiter && !inQuotes) {
                     result.push(current);
                     current = '';
@@ -3835,7 +4175,7 @@
             document.getElementById('dummyVisible').checked = dummySettings.visible;
             document.getElementById('dummyColor').value = dummySettings.color;
             document.getElementById('dummyOpacity').value = dummySettings.opacity;
-            document.getElementById('dummyShape').value = dummySettings.shape;
+            document.getElementById('dummyShape').value = SHAPES.includes(dummySettings.shape) ? dummySettings.shape : 'diamond';
         }
         
         // ============================================================
@@ -3875,6 +4215,7 @@
             currentData.forEach((row, i) => { row._index = i; });
             modifiedRows.clear();
             selectedRowIndex = null;
+            compareSlots = { a: null, b: null };
             changeLog = [];
             undoStack = [];
             redoStack = [];
@@ -4014,10 +4355,13 @@
         }
         
         function getShapeForValue(encodings, value) {
-            if (customShapeMap[value]) return customShapeMap[value];
-            if (!encodings.shape) return 'circle';
-            const idx = encodings.shape.uniqueValues.indexOf(value);
-            return SHAPES[idx % SHAPES.length];
+            let shape = customShapeMap[value];
+            if (!shape) {
+                if (!encodings.shape) return 'circle';
+                const idx = encodings.shape.uniqueValues.indexOf(value);
+                shape = SHAPES[idx % SHAPES.length];
+            }
+            return SHAPES.includes(shape) ? shape : 'circle';
         }
         
         function closeShapeSelectorPopup() {
@@ -4124,6 +4468,8 @@
                 columnVisibility[newKey] = columnVisibility[oldKey];
                 delete columnVisibility[oldKey];
             }
+            const orderIdx = columnRecordOrder.indexOf(oldKey);
+            if (orderIdx >= 0) columnRecordOrder[orderIdx] = newKey;
         }
 
         function rebuildDimensionsAfterColumnRoleChange() {
@@ -4199,7 +4545,13 @@
         function createColumnRoleListItem(header) {
             const li = document.createElement('li');
             li.className = 'column-role-item';
+            li.draggable = true;
             if (!isColumnVisibleInRecord(header)) li.classList.add('is-record-hidden');
+
+            const handle = document.createElement('span');
+            handle.className = 'drag-handle';
+            handle.textContent = '⋮⋮';
+            handle.title = 'Drag to reorder record fields';
 
             const name = document.createElement('div');
             name.className = 'column-role-name';
@@ -4237,14 +4589,22 @@
             controls.className = 'column-role-controls';
             controls.append(visBtn, select);
 
-            li.append(name, controls);
+            li.append(handle, name, controls);
+
+            li.addEventListener('dragstart', (e) => handleColumnDragStart(e, header));
+            li.addEventListener('dragend', handleColumnDragEnd);
+            li.addEventListener('dragover', handleColumnDragOver);
+            li.addEventListener('dragenter', (e) => handleColumnDragEnter(e, header));
+            li.addEventListener('dragleave', handleColumnDragLeave);
+            li.addEventListener('drop', (e) => handleColumnDrop(e, header));
+
             return li;
         }
 
         function renderColumnRoleList(container) {
             if (!container) return;
             container.innerHTML = '';
-            getEditableColumns().forEach(header => {
+            getRecordColumnOrder().forEach(header => {
                 container.appendChild(createColumnRoleListItem(header));
             });
         }
@@ -4425,6 +4785,50 @@
             autoAssignEncodingsFromOrder();
             renderDimensionList();
             updateVisualization();
+        }
+
+        function handleColumnDragStart(e, header) {
+            draggedColumnHeader = header;
+            e.currentTarget.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleColumnDragEnd(e) {
+            e.currentTarget.classList.remove('dragging');
+            draggedColumnHeader = null;
+            document.querySelectorAll('.column-role-item').forEach(item => {
+                item.classList.remove('drag-over');
+            });
+        }
+
+        function handleColumnDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        function handleColumnDragEnter(e, header) {
+            if (draggedColumnHeader && draggedColumnHeader !== header) {
+                e.currentTarget.classList.add('drag-over');
+            }
+        }
+
+        function handleColumnDragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function handleColumnDrop(e, targetHeader) {
+            e.preventDefault();
+            if (!draggedColumnHeader || draggedColumnHeader === targetHeader) return;
+
+            const fromIndex = columnRecordOrder.indexOf(draggedColumnHeader);
+            const toIndex = columnRecordOrder.indexOf(targetHeader);
+            if (fromIndex < 0 || toIndex < 0) return;
+
+            columnRecordOrder.splice(fromIndex, 1);
+            columnRecordOrder.splice(toIndex, 0, draggedColumnHeader);
+
+            renderColumnRolesSection();
+            refreshOpenRecordModal();
         }
         
         // ============================================================
@@ -5482,7 +5886,7 @@
                 point.draggable = false;
                 point.style.backgroundColor = dummySettings.color;
                 point.style.opacity = dummySettings.opacity;
-                point.classList.add(`shape-${dummySettings.shape}`);
+                point.classList.add(`shape-${SHAPES.includes(dummySettings.shape) ? dummySettings.shape : 'circle'}`);
                 
                 if (!dummySettings.visible) {
                     point.classList.add('hidden-dummy');
@@ -5516,8 +5920,11 @@
             if (isModified) {
                 point.classList.add('modified');
             }
-            if (rowIndex === selectedRowIndex) {
+            if (rowIndex === compareSlots.a) {
                 point.classList.add('selected');
+            }
+            if (compareSlots.b != null && rowIndex === compareSlots.b) {
+                point.classList.add('compare-b');
             }
             
             const hasMedia = rowHasMedia(row);
@@ -5546,11 +5953,9 @@
             point.addEventListener('mouseleave', hideTooltip);
             point.addEventListener('mousemove', moveTooltip);
             
-            // Click for modal
+            // Click for record / compare slots
             point.addEventListener('click', (e) => {
-                e.stopPropagation();
-                selectDataPoint(rowIndex);
-                openModal(row, encodings);
+                handleDataPointClick(e, rowIndex);
             });
             
             // Right-click for color menu
@@ -5586,7 +5991,7 @@
                 const uniqueIcons = [...new Set(icons)].join('');
                 html += `${uniqueIcons} Click to view • `;
             }
-            html += `Drag to move • Right-click for color</div>`;
+            html += `Drag to move • Right-click for color • Shift+click compare B</div>`;
             
             tooltip.innerHTML = html;
             tooltip.classList.add('visible');
@@ -5611,92 +6016,186 @@
         }
         
         // ============================================================
-        // MODAL
+        // MODAL & COMPARE
         // ============================================================
+        function formatModalCellValue(row, key) {
+            return escapeHtml(row[key] ?? '');
+        }
+
+        function buildRecordMediaHTML(row, tabPrefix) {
+            const media = getRowMedia(row);
+            if (media.length === 0) return '';
+
+            const p = tabPrefix || '';
+            let html = `<div class="media-section">`;
+            html += `<div class="media-section-title"><span class="icon">🎛️</span> Media (${media.length})</div>`;
+
+            if (media.length > 1) {
+                html += `<div class="media-tabs">`;
+                media.forEach((m, idx) => {
+                    const icon = m.type === 'video' ? '🎬' : m.type === 'audio' ? '🎵' : '📷';
+                    const label = m.label.charAt(0).toUpperCase() + m.label.slice(1);
+                    html += `<button class="media-tab ${idx === 0 ? 'active' : ''}" 
+                        onclick="switchMediaTab(this, ${idx})">${icon} ${label}</button>`;
+                });
+                html += `</div>`;
+
+                media.forEach((m, idx) => {
+                    html += `<div class="media-grid ${idx === 0 ? 'active' : ''}" data-media-idx="${idx}">
+                        <div class="media-container ${m.type === 'audio' ? 'audio-container' : ''}">
+                            ${generateMediaHTML(m.type, m.url, row.title || 'Media')}
+                        </div>
+                    </div>`;
+                });
+            } else {
+                const m = media[0];
+                html += `<div class="media-container ${m.type === 'audio' ? 'audio-container' : ''}">
+                    ${generateMediaHTML(m.type, m.url, row.title || 'Media')}
+                </div>`;
+            }
+
+            html += `</div>`;
+            return html;
+        }
+
+        function buildSingleRecordTableHTML(row, enc) {
+            let html = '<table class="data-table">';
+            getModalTableColumnKeys(row).forEach(key => {
+                html += `<tr><td>${escapeHtml(getDisplayName(key))}</td><td>${formatModalCellValue(row, key)}</td></tr>`;
+            });
+            html += '</table>';
+            return html;
+        }
+
+        function buildCompareDiffTableHTML(rowA, rowB, enc) {
+            const keys = getCompareFieldKeys(rowA, rowB);
+            let html = '<table class="data-table compare-diff-table"><thead><tr><th>Field</th><th>A</th><th>B</th></tr></thead><tbody>';
+            keys.forEach(key => {
+                const diff = !compareValuesEqual(rowA[key], rowB[key]);
+                html += `<tr class="${diff ? 'compare-diff-row' : ''}">`;
+                html += `<td>${escapeHtml(getDisplayName(key))}</td>`;
+                html += `<td class="${diff ? 'compare-diff-cell' : ''}">${formatModalCellValue(rowA, key)}</td>`;
+                html += `<td class="${diff ? 'compare-diff-cell' : ''}">${formatModalCellValue(rowB, key)}</td>`;
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+            return html;
+        }
+
+        function buildCompareMediaSection(rowA, rowB) {
+            const mediaA = getRowMedia(rowA);
+            const mediaB = getRowMedia(rowB);
+            if (!mediaA.length && !mediaB.length) return '';
+
+            let html = '<div class="compare-media-grid">';
+            html += `<div class="compare-media-col"><div class="compare-media-col-title slot-a">A · Media</div>`;
+            html += mediaA.length ? buildRecordMediaHTML(rowA) : '<p class="compare-empty">None</p>';
+            html += '</div>';
+            html += `<div class="compare-media-col"><div class="compare-media-col-title slot-b">B · Media</div>`;
+            html += mediaB.length ? buildRecordMediaHTML(rowB) : '<p class="compare-empty">None</p>';
+            html += '</div></div>';
+            return html;
+        }
+
+        function updateCompareSlotBar() {
+            const bar = document.getElementById('compareSlotBar');
+            const hint = document.getElementById('compareHint');
+            const aLabel = document.getElementById('compareSlotALabel');
+            const bLabel = document.getElementById('compareSlotBLabel');
+            const hasAny = compareSlots.a != null || compareSlots.b != null;
+
+            if (bar) bar.style.display = hasAny ? 'flex' : 'none';
+            if (hint) hint.style.display = hasAny ? 'block' : 'none';
+            if (aLabel) aLabel.textContent = getCompareSlotLabel(compareSlots.a);
+            if (bLabel) bLabel.textContent = getCompareSlotLabel(compareSlots.b);
+        }
+
+        function renderCompareModal() {
+            const modalEl = document.querySelector('#modalOverlay .modal');
+            const modalBody = document.getElementById('modalBody');
+            const modalTitle = document.getElementById('modalTitle');
+            if (!modalBody || !modalEl) return;
+
+            const rowA = compareSlots.a != null ? currentData[compareSlots.a] : null;
+            const rowB = compareSlots.b != null ? currentData[compareSlots.b] : null;
+
+            if (!rowA && !rowB) {
+                closeModal();
+                return;
+            }
+
+            updateCompareSlotBar();
+
+            if (rowA && rowB) {
+                modalEl.classList.add('compare-modal');
+                modalTitle.textContent = 'Compare records';
+                modalBody.innerHTML = buildCompareDiffTableHTML(rowA, rowB, encodings)
+                    + buildCompareMediaSection(rowA, rowB);
+            } else {
+                modalEl.classList.remove('compare-modal');
+                const row = rowA || rowB;
+                modalTitle.textContent = getModalTitleFromRow(row);
+                modalBody.innerHTML = buildSingleRecordTableHTML(row, encodings)
+                    + buildRecordMediaHTML(row);
+            }
+
+            preloadModalImages(modalBody);
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        function handleDataPointClick(e, rowIndex) {
+            e.stopPropagation();
+            if (e.shiftKey) {
+                compareSlots.b = rowIndex;
+            } else {
+                compareSlots.a = rowIndex;
+            }
+            selectedRowIndex = compareSlots.a;
+            syncPointSelectionClasses();
+            renderCompareModal();
+        }
+
         function selectDataPoint(rowIndex) {
+            compareSlots.a = rowIndex;
             selectedRowIndex = rowIndex;
             syncPointSelectionClasses();
         }
 
-        function clearSelection() {
-            if (selectedRowIndex === null) return;
+        function clearCompareSlot(slot) {
+            compareSlots[slot] = null;
+            selectedRowIndex = compareSlots.a;
+            syncPointSelectionClasses();
+            if (compareSlots.a == null && compareSlots.b == null) {
+                closeModal();
+            } else {
+                renderCompareModal();
+            }
+        }
+
+        function clearCompareSlots() {
+            compareSlots = { a: null, b: null };
             selectedRowIndex = null;
             syncPointSelectionClasses();
+            closeModal();
+        }
+
+        function clearSelection() {
+            clearCompareSlots();
         }
 
         function syncPointSelectionClasses() {
             document.querySelectorAll('.data-point[data-row-index]').forEach(el => {
                 const idx = Number(el.dataset.rowIndex);
-                el.classList.toggle('selected', idx === selectedRowIndex);
+                el.classList.toggle('selected', idx === compareSlots.a);
+                el.classList.toggle('compare-b', compareSlots.b != null && idx === compareSlots.b);
             });
         }
 
-        function openModal(row, encodings) {
-            const modalBody = document.getElementById('modalBody');
-            const modalTitle = document.getElementById('modalTitle');
-            
-            modalTitle.textContent = getModalTitleFromRow(row);
-            
-            let tableHTML = '<table class="data-table">';
-            
-            getModalTableColumnKeys(row).forEach(key => {
-                let valueHTML = row[key];
-                
-                if (encodings.color && key === dimKey(encodings.color)) {
-                    const color = getColorForValue(encodings, row[key]);
-                    valueHTML = `<span class="data-tag" style="background: ${color}33; color: ${color}">${row[key]}</span>`;
-                }
-                
-                tableHTML += `
-                    <tr>
-                        <td>${getDisplayName(key)}</td>
-                        <td>${valueHTML}</td>
-                    </tr>
-                `;
-            });
-            
-            tableHTML += '</table>';
-            
-            // Multi-media support
-            const media = getRowMedia(row);
-            
-            if (media.length > 0) {
-                tableHTML += `<div class="media-section">`;
-                tableHTML += `<div class="media-section-title"><span class="icon">🎛️</span> Media (${media.length})</div>`;
-                
-                if (media.length > 1) {
-                    // Tabbed interface for multiple media
-                    tableHTML += `<div class="media-tabs">`;
-                    media.forEach((m, idx) => {
-                        const icon = m.type === 'video' ? '🎬' : m.type === 'audio' ? '🎵' : '📷';
-                        const label = m.label.charAt(0).toUpperCase() + m.label.slice(1);
-                        tableHTML += `<button class="media-tab ${idx === 0 ? 'active' : ''}" 
-                            onclick="switchMediaTab(this, ${idx})">${icon} ${label}</button>`;
-                    });
-                    tableHTML += `</div>`;
-                    
-                    media.forEach((m, idx) => {
-                        tableHTML += `<div class="media-grid ${idx === 0 ? 'active' : ''}" data-media-idx="${idx}">
-                            <div class="media-container ${m.type === 'audio' ? 'audio-container' : ''}">
-                                ${generateMediaHTML(m.type, m.url, row.title || 'Media')}
-                            </div>
-                        </div>`;
-                    });
-                } else {
-                    // Single media — no tabs
-                    const m = media[0];
-                    const icon = m.type === 'video' ? '🎬' : m.type === 'audio' ? '🎵' : '📷';
-                    tableHTML += `<div class="media-container ${m.type === 'audio' ? 'audio-container' : ''}">
-                        ${generateMediaHTML(m.type, m.url, row.title || 'Media')}
-                    </div>`;
-                }
-                
-                tableHTML += `</div>`;
-            }
-            
-            modalBody.innerHTML = tableHTML;
-            preloadModalImages(modalBody);
-            document.getElementById('modalOverlay').classList.add('active');
+        function openModal(row, enc) {
+            compareSlots.a = row._index;
+            selectedRowIndex = compareSlots.a;
+            syncPointSelectionClasses();
+            renderCompareModal();
         }
         
         function switchMediaTab(btn, idx) {
@@ -5830,19 +6329,13 @@
         }
 
         function makeSnapshotOnclone(liveModal, options = {}) {
+            const { lightMode } = options;
             return (_doc, cloneEl) => {
                 expandSnapshotClone(cloneEl);
-                if (options.hideMedia) {
-                    const ms = cloneEl.querySelector('.media-section');
-                    if (ms) ms.style.display = 'none';
-                }
-                if (options.hideTable) {
-                    const tbl = cloneEl.querySelector('table');
-                    if (tbl) tbl.style.display = 'none';
-                    cloneEl.querySelectorAll('.modal-snap-btn, .modal-close').forEach(b => {
-                        b.style.display = 'none';
-                    });
-                }
+                if (lightMode) cloneEl.classList.add('snapshot-light');
+                cloneEl.querySelectorAll('.modal-snap-actions, .modal-close, .compare-slot-actions').forEach(el => {
+                    el.style.display = 'none';
+                });
                 syncInlineImagesToClone(liveModal, cloneEl);
             };
         }
@@ -6038,7 +6531,7 @@
             URL.revokeObjectURL(a.href);
         }
         
-        async function snapshotModal(mode) {
+        async function snapshotModal(lightMode = false) {
             const modal = document.querySelector('#modalOverlay .modal');
             if (!modal) return;
             if (typeof html2canvas === 'undefined') {
@@ -6047,63 +6540,25 @@
             }
 
             const title = (document.getElementById('modalTitle')?.textContent || 'record').replace(/\s+/g, '_');
-            const BG = '#1e1e2f';
+            const BG = lightMode ? '#ffffff' : '#1e1e2f';
+            const suffix = lightMode ? '_light' : '';
             const restoreImages = await inlineImagesForSnapshot(modal);
 
-            function downloadCanvas(canvas, filename) {
+            try {
+                const canvas = await html2canvas(modal, {
+                    ...HTML2CANVAS_SNAPSHOT_OPTS,
+                    backgroundColor: BG,
+                    scale: 2,
+                    onclone: makeSnapshotOnclone(modal, { lightMode: !!lightMode })
+                });
                 canvas.toBlob(blob => {
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = filename;
+                    a.download = `${title}${suffix}.png`;
                     a.click();
                     URL.revokeObjectURL(url);
                 }, 'image/png');
-            }
-
-            try {
-                if (mode === 'full') {
-                    const canvas = await html2canvas(modal, {
-                        ...HTML2CANVAS_SNAPSHOT_OPTS,
-                        backgroundColor: BG,
-                        scale: 2,
-                        onclone: makeSnapshotOnclone(modal)
-                    });
-                    downloadCanvas(canvas, `${title}_stacked.png`);
-                } else {
-                    const fieldsCanvas = await html2canvas(modal, {
-                        ...HTML2CANVAS_SNAPSHOT_OPTS,
-                        backgroundColor: BG,
-                        scale: 2,
-                        onclone: makeSnapshotOnclone(modal, { hideMedia: true })
-                    });
-                    const mediaCanvas = await html2canvas(modal, {
-                        ...HTML2CANVAS_SNAPSHOT_OPTS,
-                        backgroundColor: BG,
-                        scale: 2,
-                        onclone: makeSnapshotOnclone(modal, { hideTable: true })
-                    });
-
-                    const pad = 40;
-                    const targetH = Math.min(fieldsCanvas.height, mediaCanvas.height);
-                    const scaleF = targetH / fieldsCanvas.height;
-                    const scaleM = targetH / mediaCanvas.height;
-                    const dw_f = Math.round(fieldsCanvas.width * scaleF);
-                    const dw_m = Math.round(mediaCanvas.width * scaleM);
-                    const cellW = Math.max(dw_f, dw_m);
-
-                    const out = document.createElement('canvas');
-                    out.width = cellW * 2 + pad;
-                    out.height = targetH;
-                    const ctx = out.getContext('2d');
-                    ctx.fillStyle = BG;
-                    ctx.fillRect(0, 0, out.width, out.height);
-                    ctx.drawImage(fieldsCanvas, 0, 0, fieldsCanvas.width, fieldsCanvas.height,
-                        (cellW - dw_f) / 2, 0, dw_f, targetH);
-                    ctx.drawImage(mediaCanvas, 0, 0, mediaCanvas.width, mediaCanvas.height,
-                        cellW + pad + (cellW - dw_m) / 2, 0, dw_m, targetH);
-                    downloadCanvas(out, `${title}_side-by-side.png`);
-                }
             } catch (err) {
                 console.error('Snapshot failed:', err);
             } finally {
@@ -6114,6 +6569,7 @@
         function closeModal(event) {
             if (event && event.target !== event.currentTarget) return;
             document.getElementById('modalOverlay').classList.remove('active');
+            document.querySelector('#modalOverlay .modal')?.classList.remove('compare-modal');
             document.querySelectorAll('video, audio').forEach(el => {
                 el.pause();
                 el.currentTime = 0;
@@ -6365,6 +6821,7 @@
             currentData = realData;
             modifiedRows.clear();
             selectedRowIndex = null;
+            compareSlots = { a: null, b: null };
             changeLog = [];
             undoStack = [];
             redoStack = [];
@@ -6372,6 +6829,7 @@
             customShapeMap = {};
             dimensionValueFilters = {};
             columnVisibility = {};
+            columnRecordOrder = [];
             toggleEncodingLegend(false);
             
             userDimensionOrder = allDimensions.map(d => d.name);
@@ -6379,6 +6837,7 @@
             autoAssignEncodingsFromOrder();
             
             ensureColumnVisibilityDefaults(headers);
+            ensureColumnRecordOrderDefaults(headers);
             
             document.getElementById('vizConfigSection').style.display = 'block';
             renderColumnRolesSection();

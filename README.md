@@ -21,6 +21,8 @@ Built on PLeW (currently under review), a browser-based multi-dimensional data v
    ```
 4. Open http://localhost:1313/ in your browser.
 
+For a full walkthrough of every feature using the SimpEval example, see the in-app **[User guide](http://localhost:1313/user-guide.html)** (also [docs/user-guide.md](docs/user-guide.md)).
+
 Two entry points once the server is running:
 - **Full editor** (upload your own CSV/JSON): http://localhost:1313/
 - **Example datasets**: http://localhost:1313/examples/
@@ -85,6 +87,7 @@ The `examples/` gallery ships with the following public human-evaluation dataset
 | SimpEval (LENS) | Text simplification | Maddela et al., "LENS: A Learnable Evaluation Metric for Text Simplification." ACL 2023. [GitHub](https://github.com/Yao-Dou/LENS) |
 | Flickr8k | Image captioning | Hodosh, Young, and Hockenmaier, "Framing Image Description as a Ranking Task." JAIR 2013. |
 | THumB 1.0 | Image captioning | Kasai et al., "Transparent Human Evaluation for Image Captioning." NAACL 2022. |
-| Book highlights (preference judgment, faithfulness) | LLM-as-judge | Same et al., RetroEval 2026. [Paper](https://aclanthology.org/2026.retroeval-main.6/), [GitHub](https://github.com/fsame/book_summarization_e2e_pipeline) |
+| Book highlights (preference judgment) | LLM-as-judge | Same et al., RetroEval 2026. [Paper](https://aclanthology.org/2026.retroeval-main.6/), [GitHub](https://github.com/fsame/book_summarization_e2e_pipeline) |
+| Book highlights (faithfulness) | LLM-as-judge | Same et al., RetroEval 2026. [Paper](https://aclanthology.org/2026.retroeval-main.6/), [GitHub](https://github.com/fsame/book_summarization_e2e_pipeline) |
 
 <!-- ## Citation -->
