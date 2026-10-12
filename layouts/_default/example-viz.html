@@ -868,6 +868,16 @@
             --count-color: #555;
             --panel-label-font-size: 0.55rem;
             --panel-label-color: #555;
+            --panel-y-col: calc(var(--panel-label-font-size) * 1.6 + 10px);
+            --label-font-weight: 400;
+        }
+
+        .grid-col-label,
+        .grid-row-label,
+        .grid-title,
+        .panel-axis-label,
+        .grid-axis-label {
+            font-weight: var(--label-font-weight);
         }
         
         .grid-grid {
@@ -951,14 +961,21 @@
         /* panel Axis Labels */
         .panel-axis-label {
             font-size: var(--panel-label-font-size);
+            line-height: 1.25;
             color: var(--panel-label-color);
             text-align: center;
-            padding: 2px;
+            padding: 3px 4px;
             background: #1a1f26;
+            position: relative;
+            z-index: 2;
         }
         
         .panel-axis-label.x-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border-radius: 4px 4px 0 0;
+            min-height: calc(var(--panel-label-font-size) * 1.35 + 8px);
         }
         
         .panel-axis-label.y-header {
@@ -2684,6 +2701,7 @@
                                 <label>Inner panel color</label>
                                 <input type="color" id="countColor" value="#555555" oninput="applyLabelStyle()">
                             </div>
+                            <label class="viz-checkbox"><input type="checkbox" id="labelBold" onchange="applyLabelStyle()"> Bold</label>
                         </div>
                     </div>
                     <div class="label-style-wrap" id="displayOptionsWrap">
@@ -3043,7 +3061,8 @@
                     labelSize: document.getElementById('labelSize')?.value ?? '0.7',
                     labelColor: document.getElementById('labelColor')?.value ?? '#888888',
                     countSize: document.getElementById('countSize')?.value ?? '0.6',
-                    countColor: document.getElementById('countColor')?.value ?? '#555555'
+                    countColor: document.getElementById('countColor')?.value ?? '#555555',
+                    labelBold: !!document.getElementById('labelBold')?.checked
                 },
                 dummySettings: { ...dummySettings },
                 columns: {
@@ -3133,6 +3152,7 @@
             setValue('labelColor', display.labelColor);
             setValue('countSize', display.countSize);
             setValue('countColor', display.countColor);
+            setChecked('labelBold', display.labelBold);
             document.getElementById('outerPanelRowHeight')?.toggleAttribute('disabled', !uniformgridSizes);
             document.getElementById('innerPanelRowHeight')?.toggleAttribute('disabled', !unifyInnerPanel);
             applyLabelStyle();
@@ -3491,7 +3511,6 @@
         
         let uniformgridSizes = false;
         let unifyInnerPanel = false;
-        const PANEL_HEADER_HEIGHT = 16;
         
         // Drag and drop state
         let draggedDimensionItem = null;
@@ -5831,6 +5850,7 @@
             container.style.setProperty('--count-color', countColor);
             container.style.setProperty('--panel-label-font-size', (parseFloat(countSize) * 0.9).toFixed(2) + 'rem');
             container.style.setProperty('--panel-label-color', countColor);
+            container.style.setProperty('--label-font-weight', document.getElementById('labelBold')?.checked ? '700' : '400');
         }
         
         function createCell(content) {
@@ -5869,16 +5889,14 @@
             
             const panelGrid = document.createElement('div');
             panelGrid.className = 'panel-grid';
-            panelGrid.style.gridTemplateColumns = `20px repeat(${panelCols}, 1fr)`;
+            panelGrid.style.gridTemplateColumns = `var(--panel-y-col, 22px) repeat(${panelCols}, 1fr)`;
             if (unifyInnerPanel) {
                 const rowHeight = getInnerPanelRowHeight();
-                const panelGridHeight = PANEL_HEADER_HEIGHT + panelRows * rowHeight;
-                panelGrid.style.gridTemplateRows = `${PANEL_HEADER_HEIGHT}px repeat(${panelRows}, ${rowHeight}px)`;
-                panelGrid.style.height = `${panelGridHeight}px`;
+                panelGrid.style.gridTemplateRows = `auto repeat(${panelRows}, ${rowHeight}px)`;
             } else {
-                panelGrid.style.gridTemplateRows = `${PANEL_HEADER_HEIGHT}px repeat(${panelRows}, 1fr)`;
-                panelGrid.style.height = '';
+                panelGrid.style.gridTemplateRows = `auto repeat(${panelRows}, 1fr)`;
             }
+            panelGrid.style.height = '';
             
             // Corner cell
             const corner = document.createElement('div');
